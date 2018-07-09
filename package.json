@@ -1,0 +1,45 @@
+{
+  "name": "@devo/nodejs-sdk",
+  "version": "1.0.0",
+  "description": "Devo SDK for Node.js",
+  "author": "Devo Dev Team",
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    }
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter list --timeout 10000 test/*.js",
+    "posttest": "npm run lint",
+    "lint": "eslint '**/*.js'"
+  },
+  "bin": {
+    "devo-query": "bin/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:devoinc/nodejs-sdk.git"
+  },
+  "keywords": [
+    "Devo",
+    "SDK",
+    "API",
+    "Query",
+    "LinQ"
+  ],
+  "dependencies": {
+    "basic-request": "1.2.2",
+    "command-line-args": "4.0.2",
+    "command-line-usage": "4.0.0",
+    "@devo/js-helper": "~1.0.0",
+    "whatwg-fetch": "2.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^4.18.1",
+    "mocha": "^3.5.0",
+    "should": "^12.0.0"
+  },
+  "license": "MIT"
+}

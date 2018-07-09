@@ -1,0 +1,25 @@
+{
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "globalReturn": true,
+      "modules": true
+    }
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "mocha": true
+  },
+  "rules": {
+    "quotes": ["error", "single"],
+    "no-extra-semi": "error",
+    "no-console": "off",
+    "no-trailing-spaces": "error",
+    "indent": ["error", 2],
+    "max-len": ["error", {"code": 80}],
+    "no-unused-vars": ["error", {"args": "none"}]
+  }
+}
