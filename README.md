@@ -141,7 +141,7 @@ client.query({
   dateTo: new Date()
 }, (error, result) => {
   if (error) return console.error('Query failed: %s', error)
-  console.log('Received %s', result)
+  console.log('Received %j', result)
 })
 ```
 
@@ -195,7 +195,7 @@ client.stream({
 }, (error, stream) => {
   if (error) return console.error('Query failed: %s', error)
   stream.on('error', error => console.error('Streaming failed: %s', error))
-  stream.on('data', data => console.log('Received row: %s', data))
+  stream.on('data', data => console.log('Received row: %j', data))
   stream.on('end', () => console.log('Finished'))
 })
 ```
