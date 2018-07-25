@@ -27,6 +27,7 @@ describe.only('Event sender', () => {
           String(data).should.containEql(MESSAGE_STRING)
           String(data).should.containEql('{')
           String(data).should.containEql('}')
+          String(data).should.containEql('hi')
           sender.end()
           server.close()
           done()
