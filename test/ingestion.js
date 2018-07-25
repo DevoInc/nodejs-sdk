@@ -32,7 +32,7 @@ describe.only('Data ingestion', () => {
     })
     server.unref()
   });
-  it('sends string locally', done => {
+  it('sends object locally', done => {
     const server = net.createServer(socket => {
       socket.on('data', data => {
         const string = String(data)
