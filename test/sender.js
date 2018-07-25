@@ -8,6 +8,7 @@ const senderLib = require('../lib/sender.js');
 const LOCAL_PORT = 7682
 const MESSAGE_STRING = 'I am Groot'
 const MESSAGE_OBJECT = {message: MESSAGE_STRING, note: 'hi'}
+const YEAR = new Date().getFullYear()
 
 
 describe.only('Event sender', () => {
@@ -22,12 +23,14 @@ describe.only('Event sender', () => {
       sender.send(MESSAGE_STRING)
       server.waitFor('data', data => {
         String(data).should.containEql(MESSAGE_STRING)
+        String(data).should.containEql(YEAR)
         sender.send(MESSAGE_OBJECT)
         server.waitFor('data', data => {
           String(data).should.containEql(MESSAGE_STRING)
           String(data).should.containEql('{')
           String(data).should.containEql('}')
           String(data).should.containEql('hi')
+          String(data).should.containEql(YEAR)
           sender.end()
           server.close()
           done()
@@ -46,6 +49,7 @@ describe.only('Event sender', () => {
       sender.write(MESSAGE_STRING)
       server.waitFor('data', data => {
         String(data).should.containEql(MESSAGE_STRING)
+        String(data).should.containEql(YEAR)
         sender.end()
         server.close()
         done()
@@ -67,6 +71,7 @@ describe.only('Event sender', () => {
         String(data).should.containEql('{')
         String(data).should.containEql('}')
         String(data).should.containEql('hi')
+        String(data).should.containEql(YEAR)
         sender.end()
         server.close()
         done()
