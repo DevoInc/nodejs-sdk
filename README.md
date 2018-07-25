@@ -3,15 +3,103 @@
 This is the SDK to access Devo directly from Node.js.
 It can be used to query Devo, and to manage deferred tasks.
 
-## Installation
+## Quick Start
 
-Install with:
+Install with `npm`:
 
     $ npm install @devo/nodejs-sdk
 
-## Use
+Send some data to Devo in your code:
 
-Import in your code and create the client:
+``` js
+const devo = require('@devo/nodejs-sdk')
+
+const sender = devo.sender({host, port})
+sender.send('my first message')
+```
+
+From that point you can start sending events:
+
+```js
+sender.send('something happened')
+sender.send({message: 'something happened', priority: 'high'})
+```
+
+See detailed info on [event-sender](#sender), [credentials](#credentials),
+[querying](#querying) and [task management](#task-management).
+Also check out how to make [command line queries](command-line-queries).
+
+## Installation
+
+You will need to have Node.js locally installed, version 8 or later.
+Install the SDK with:
+
+    $ npm install @devo/nodejs-sdk
+
+## Event Sender
+
+The SDK supports sending sending events to Devo.
+First import the SDK in your code and start the sender:
+
+``` js
+const devo = require('@devo/nodejs-sdk')
+
+const sender = devo.sender(options)
+```
+
+From that point you can start sending events:
+
+```js
+sender.send('something happened')
+sender.send({message: 'something happened', priority: 'high'})
+```
+
+Devo only ingests plain text messages;
+if an object is passed it will be converted to JSON before sending it.
+
+### Use as Stream
+
+The `sender` returned can be used as a writeable Node.js stream:
+it can be written to, piped to and so on.
+The stream also implements backpressure:
+if too much data is sent at a time it will throttle the writer back.
+
+For example, to send a file to Devo line by line:
+
+```
+const devo = require('@devo/nodejs-sdk')
+const fs = require('fs')
+
+const sender = devo.sender(options)
+fs.createReadStream('/path/to/file')
+fs.pipe(sender)
+```
+
+### Sender Options
+
+These options are passed to the `devo.sender()` constructor.
+
+#### `host`
+
+The host to send the events.
+
+* For EU: `app.logtrust.com`.
+* For US: `usa.logtrust.com`.
+
+#### `port`
+
+The port to send the events, mandatory.
+Currently only 443 is enabled.
+
+#### `objectMode`
+
+If the sender is going to be used as a stream and you want to
+send objects, set to `true`. Objects will be converted to JSON.
+
+## Devo Client
+
+The SDK has a client to the Devo API for queries.
+First import the SDK in your code and create the client:
 
 ``` js
 const devo = require('@devo/nodejs-sdk')
@@ -392,9 +480,10 @@ It is then changed to `stopped` when stopped,
 and can be changed back to `running` if restarted.
 If it is removed then it changes to `removed`.
 
-## Command Line Version
+## Command Line Queries
 
-To run queries from the command line it is best to install the package globally:
+The SDK supports running queries from the command line.
+Install the package globally:
 
 ```
 npm install -g @devo/nodejs-sdk
