@@ -13,73 +13,83 @@ const MESSAGE_OBJECT = {message: MESSAGE_STRING, note: 'hi'}
 describe.only('Event sender', () => {
 
   it('sends multiple events', done => {
-    const server = net.createServer(socket => {
-      socket.on('data', data => {
-        const string = String(data)
-        string.should.containEql(MESSAGE_STRING)
-        server.close()
-        done()
-      })
-    })
-    server.listen(LOCAL_PORT, () => {
+    const server = new TestServer(LOCAL_PORT, () => {
       const sender = senderLib.create({
         host: 'localhost',
         port: LOCAL_PORT,
       })
-      sender.send(MESSAGE_STRING, error => {
-        if (error) done(error)
+      sender.on('error', done)
+      sender.send(MESSAGE_STRING)
+      server.waitFor('data', data => {
+        String(data).should.containEql(MESSAGE_STRING)
+        sender.send(MESSAGE_OBJECT)
+        server.waitFor('data', data => {
+          String(data).should.containEql(MESSAGE_STRING)
+          String(data).should.containEql('{')
+          String(data).should.containEql('}')
+          sender.end()
+          server.close()
+          done()
+        })
       })
-      sender.send(MESSAGE_OBJECT, error => {
-        if (error) done(error)
-      })
-      sender.end()
     })
-    server.unref()
   })
 
   it('sends string locally', done => {
-    const server = net.createServer(socket => {
-      socket.on('data', data => {
-        const string = String(data)
-        string.should.containEql(MESSAGE_STRING)
-        server.close()
-        done()
-      })
-    })
-    server.listen(LOCAL_PORT, () => {
+    const server = new TestServer(LOCAL_PORT, () => {
       const sender = senderLib.create({
         host: 'localhost',
         port: LOCAL_PORT,
       })
-      sender.write(MESSAGE_STRING, error => {
-        if (error) done(error)
-      })
-      sender.end()
-    })
-    server.unref()
-  });
-  it('sends object locally', done => {
-    const server = net.createServer(socket => {
-      socket.on('data', data => {
-        const string = String(data)
-        string.should.containEql(MESSAGE_STRING)
-        string.should.containEql('{')
-        string.should.containEql('}')
-        string.should.containEql('hi')
+      sender.on('error', done)
+      sender.write(MESSAGE_STRING)
+      server.waitFor('data', data => {
+        String(data).should.containEql(MESSAGE_STRING)
+        sender.end()
         server.close()
         done()
       })
     })
-    server.listen(LOCAL_PORT, () => {
+  });
+
+  it('sends object locally', done => {
+    const server = new TestServer(LOCAL_PORT, () => {
       const sender = senderLib.create({
         host: 'localhost',
         port: LOCAL_PORT,
         objectMode: true,
       })
-      sender.write(MESSAGE_OBJECT, error => {
-        if (error) done(error)
+      sender.on('error', done)
+      sender.write(MESSAGE_OBJECT)
+      server.waitFor('data', data => {
+        String(data).should.containEql(MESSAGE_STRING)
+        String(data).should.containEql('{')
+        String(data).should.containEql('}')
+        String(data).should.containEql('hi')
+        sender.end()
+        server.close()
+        done()
       })
     })
   })
 })
+
+class TestServer {
+  constructor(port, callback) {
+    this._server = net.createServer(socket => this._socket = socket)
+    this._server.unref()
+    this._server.listen(port, callback)
+  }
+
+  waitFor(event, handler) {
+    if (this._socket) {
+      return this._socket.once(event, handler)
+    }
+    setImmediate(() => this.waitFor(event, handler))
+  }
+
+  close() {
+    this._server.close()
+  }
+}
 
