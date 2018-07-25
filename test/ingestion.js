@@ -11,20 +11,49 @@ const MESSAGE = 'I am Groot'
 
 describe.only('Data ingestion', () => {
 
-  it('sends data locally', done => {
+  it('sends string locally', done => {
     const server = net.createServer(socket => {
       socket.on('data', data => {
         const string = String(data)
-        string.should.contain(MESSAGE)
+        string.should.containEql(MESSAGE)
+        server.close()
         done()
       })
     })
     server.listen(LOCAL_PORT, () => {
-      const ingestion = ingestionLib.create('localhost:' + LOCAL_PORT)
-      ingestion.send(MESSAGE, error => {
-        if (error) done(new Error(error))
+      const ingestion = ingestionLib.create({
+        host: 'localhost',
+        port: LOCAL_PORT,
+      })
+      ingestion.write(MESSAGE, error => {
+        if (error) done(error)
+      })
+      ingestion.end()
+    })
+    server.unref()
+  });
+  it('sends string locally', done => {
+    const server = net.createServer(socket => {
+      socket.on('data', data => {
+        const string = String(data)
+        string.should.containEql(MESSAGE)
+        string.should.containEql('{')
+        string.should.containEql('}')
+        string.should.containEql('hi')
+        server.close()
+        done()
       })
     })
-  });
-});
+    server.listen(LOCAL_PORT, () => {
+      const ingestion = ingestionLib.create({
+        host: 'localhost',
+        port: LOCAL_PORT,
+        objectMode: true,
+      })
+      ingestion.write({message: MESSAGE, note: 'hi'}, error => {
+        if (error) done(error)
+      })
+    })
+  })
+})
 
