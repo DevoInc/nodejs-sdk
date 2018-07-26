@@ -18,7 +18,7 @@ const options = {
 describe.only('Event sender', () => {
 
   it('sends multiple events', done => {
-    const server = new TestServer(localPort, () => {
+    const server = new TestServer(options, () => {
       const sender = senderLib.create(options)
       sender.on('error', done)
       sender.send(messageString)
@@ -41,7 +41,7 @@ describe.only('Event sender', () => {
   })
 
   it('sends string locally', done => {
-    const server = new TestServer(localPort, () => {
+    const server = new TestServer(options, () => {
       const sender = senderLib.create(options)
       sender.on('error', done)
       sender.write(messageString)
@@ -56,7 +56,7 @@ describe.only('Event sender', () => {
   });
 
   it('sends object locally', done => {
-    const server = new TestServer(localPort, () => {
+    const server = new TestServer(options, () => {
       const sender = senderLib.create({
         ...options,
         objectMode: true,
@@ -78,10 +78,10 @@ describe.only('Event sender', () => {
 })
 
 class TestServer {
-  constructor(port, callback) {
+  constructor(options, callback) {
     this._server = net.createServer(socket => this._socket = socket)
     this._server.unref()
-    this._server.listen(port, callback)
+    this._server.listen(options.port, callback)
   }
 
   waitFor(event, handler) {
