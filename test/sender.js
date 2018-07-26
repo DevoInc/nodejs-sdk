@@ -1,6 +1,7 @@
 'use strict';
 
 require('should');
+const fs = require('fs');
 const net = require('net');
 const tls = require('tls');
 
@@ -76,11 +77,46 @@ describe.only('Event sender', () => {
       })
     })
   })
+  it('sends on TLS', done => {
+    const serverOptions = {
+      ...options,
+      cert: fs.readFileSync(__dirname + '/keys/server.crt'),
+      key: fs.readFileSync(__dirname + '/keys/server.key'),
+      ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
+      requestCert: true,
+    }
+    const server = new TestServer(serverOptions, () => {
+      const clientOptions = {
+        ...options,
+        cert: fs.readFileSync(__dirname + '/keys/client.crt'),
+        key: fs.readFileSync(__dirname + '/keys/client.key'),
+        ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
+      }
+      const sender = senderLib.create(clientOptions)
+      sender.on('error', done)
+      sender.send(messageString)
+      server.waitFor('data', data => {
+        String(data).should.containEql(messageString)
+        String(data).should.containEql(year)
+        sender.send(messageObject)
+        server.waitFor('data', data => {
+          String(data).should.containEql(messageString)
+          String(data).should.containEql('{')
+          String(data).should.containEql('}')
+          String(data).should.containEql('hi')
+          String(data).should.containEql(year)
+          sender.end()
+          server.close()
+          done()
+        })
+      })
+    })
+  })
 })
 
 class TestServer {
   constructor(options, callback) {
-    const libnet = options.crt ? tls : net
+    const libnet = options.cert ? tls : net
     this._server = libnet.createServer(options, socket => this._socket = socket)
     this._server.unref()
     this._server.listen(options.port, callback)
