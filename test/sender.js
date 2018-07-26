@@ -5,33 +5,33 @@ const net = require('net');
 
 const senderLib = require('../lib/sender.js');
 
-const LOCAL_PORT = 7682
-const MESSAGE_STRING = 'I am Groot'
-const MESSAGE_OBJECT = {message: MESSAGE_STRING, note: 'hi'}
-const YEAR = new Date().getFullYear()
-const OPTIONS = {
+const localPort = 7682
+const messageString = 'I am Groot'
+const messageObject = {message: messageString, note: 'hi'}
+const year = new Date().getFullYear()
+const options = {
   host: 'localhost',
-  port: LOCAL_PORT,
+  port: localPort,
 }
 
 
 describe.only('Event sender', () => {
 
   it('sends multiple events', done => {
-    const server = new TestServer(LOCAL_PORT, () => {
-      const sender = senderLib.create(OPTIONS)
+    const server = new TestServer(localPort, () => {
+      const sender = senderLib.create(options)
       sender.on('error', done)
-      sender.send(MESSAGE_STRING)
+      sender.send(messageString)
       server.waitFor('data', data => {
-        String(data).should.containEql(MESSAGE_STRING)
-        String(data).should.containEql(YEAR)
-        sender.send(MESSAGE_OBJECT)
+        String(data).should.containEql(messageString)
+        String(data).should.containEql(year)
+        sender.send(messageObject)
         server.waitFor('data', data => {
-          String(data).should.containEql(MESSAGE_STRING)
+          String(data).should.containEql(messageString)
           String(data).should.containEql('{')
           String(data).should.containEql('}')
           String(data).should.containEql('hi')
-          String(data).should.containEql(YEAR)
+          String(data).should.containEql(year)
           sender.end()
           server.close()
           done()
@@ -41,13 +41,13 @@ describe.only('Event sender', () => {
   })
 
   it('sends string locally', done => {
-    const server = new TestServer(LOCAL_PORT, () => {
-      const sender = senderLib.create(OPTIONS)
+    const server = new TestServer(localPort, () => {
+      const sender = senderLib.create(options)
       sender.on('error', done)
-      sender.write(MESSAGE_STRING)
+      sender.write(messageString)
       server.waitFor('data', data => {
-        String(data).should.containEql(MESSAGE_STRING)
-        String(data).should.containEql(YEAR)
+        String(data).should.containEql(messageString)
+        String(data).should.containEql(year)
         sender.end()
         server.close()
         done()
@@ -56,19 +56,19 @@ describe.only('Event sender', () => {
   });
 
   it('sends object locally', done => {
-    const server = new TestServer(LOCAL_PORT, () => {
+    const server = new TestServer(localPort, () => {
       const sender = senderLib.create({
-        ...OPTIONS,
+        ...options,
         objectMode: true,
       })
       sender.on('error', done)
-      sender.write(MESSAGE_OBJECT)
+      sender.write(messageObject)
       server.waitFor('data', data => {
-        String(data).should.containEql(MESSAGE_STRING)
+        String(data).should.containEql(messageString)
         String(data).should.containEql('{')
         String(data).should.containEql('}')
         String(data).should.containEql('hi')
-        String(data).should.containEql(YEAR)
+        String(data).should.containEql(year)
         sender.end()
         server.close()
         done()
