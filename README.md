@@ -25,7 +25,8 @@ sender.send('something happened')
 sender.send({message: 'something happened', priority: 'high'})
 ```
 
-See detailed info on [event-sender](#sender), [credentials](#credentials),
+See detailed info on [sending events](#sending-events),
+[Devo client](#devo-client),
 [querying](#querying) and [task management](#task-management).
 Also check out how to make [command line queries](command-line-queries).
 
@@ -36,9 +37,9 @@ Install the SDK with:
 
     $ npm install @devo/nodejs-sdk
 
-## Event Sender
+## Sending Events
 
-The SDK supports sending sending events to Devo.
+The SDK supports sending events to Devo.
 First import the SDK in your code and start the sender:
 
 ``` js
@@ -47,7 +48,7 @@ const devo = require('@devo/nodejs-sdk')
 const sender = devo.sender(options)
 ```
 
-From that point you can start sending events:
+From there you can start sending events:
 
 ```js
 sender.send('something happened')
@@ -56,6 +57,61 @@ sender.send({message: 'something happened', priority: 'high'})
 
 Devo only ingests plain text messages;
 if an object is passed it will be converted to JSON before sending it.
+
+### Sender Credentials
+
+You need to be a customer to send your events to Devo.
+You can obtain your certificate and private key from
+[Devo](https://www.devo.com/):
+go to the "Administration/Credentials" section,
+and then to
+["X.509 Certificates"](https://docs.devo.com/confluence/docs/administration/administration-credentials#Administrationcredentials-X.509Certificates).
+
+### Sender Options
+
+These options are passed to the `devo.sender()` constructor.
+They will determine where and how to send the events.
+
+#### `host`
+
+The host to send the events.
+
+* For EU: `app.logtrust.com`.
+* For US: `usa.logtrust.com`.
+
+#### `port`
+
+The port to send the events, mandatory.
+Currently only port 443 is enabled for ingestion.
+
+#### `key`
+
+Private key for sending events securely.
+You need to pass the whole key, not a path.
+
+#### `cert`
+
+Certificate for sending securely.
+You need to pass the whole certificate, not a path.
+
+#### `objectMode`
+
+If the sender is going to be used as a stream and you want to
+send objects, set to `true`. Objects will be converted to JSON.
+
+### Putting It All Together
+
+To create the sender you will need to pass all the parameters required.
+Example:
+
+```
+const sender = devo.sender({
+  host: 'app.logtrust.com',
+  port: 443,
+  cert: fs.readFileSync('path/to/cert'),
+  key: fs.readFileSync('path/to/key'),
+})
+```
 
 ### Use as Stream
 
@@ -75,27 +131,6 @@ fs.createReadStream('/path/to/file')
 fs.pipe(sender)
 ```
 
-### Sender Options
-
-These options are passed to the `devo.sender()` constructor.
-
-#### `host`
-
-The host to send the events.
-
-* For EU: `app.logtrust.com`.
-* For US: `usa.logtrust.com`.
-
-#### `port`
-
-The port to send the events, mandatory.
-Currently only 443 is enabled.
-
-#### `objectMode`
-
-If the sender is going to be used as a stream and you want to
-send objects, set to `true`. Objects will be converted to JSON.
-
 ## Devo Client
 
 The SDK has a client to the Devo API for queries.
@@ -107,7 +142,7 @@ const devo = require('@devo/nodejs-sdk')
 const client = devo.client(credentials)
 ```
 
-### Credentials
+### Client Credentials
 
 You need to be a customer to connect to the API.
 You can obtain your API key and API secret from [Devo](https://www.devo.com/):
@@ -534,7 +569,7 @@ Make sure that everything runs fine:
 npm test
 ```
 
-Note: you will need to have your [credentials](#credentials) in the file
+Note: you will need to have your [credentials](#client-credentials) in the file
 `$HOME/.devo.json`.
 
 And start playing!
