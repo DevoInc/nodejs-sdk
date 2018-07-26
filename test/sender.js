@@ -2,6 +2,7 @@
 
 require('should');
 const net = require('net');
+const tls = require('tls');
 
 const senderLib = require('../lib/sender.js');
 
@@ -79,7 +80,8 @@ describe.only('Event sender', () => {
 
 class TestServer {
   constructor(options, callback) {
-    this._server = net.createServer(socket => this._socket = socket)
+    const libnet = options.crt ? tls : net
+    this._server = libnet.createServer(options, socket => this._socket = socket)
     this._server.unref()
     this._server.listen(options.port, callback)
   }
