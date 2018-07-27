@@ -11,17 +11,30 @@ const localPort = 7682
 const messageString = 'I am Groot'
 const messageObject = {message: messageString, note: 'hi'}
 const year = new Date().getFullYear()
-const options = {
+const insecureOptions = {
   host: 'localhost',
   port: localPort,
+}
+const serverOptions = {
+  ...insecureOptions,
+  cert: fs.readFileSync(__dirname + '/keys/server.crt'),
+  key: fs.readFileSync(__dirname + '/keys/server.key'),
+  ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
+  requestCert: true,
+}
+const clientOptions = {
+  ...insecureOptions,
+  cert: fs.readFileSync(__dirname + '/keys/client.crt'),
+  key: fs.readFileSync(__dirname + '/keys/client.key'),
+  ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
 }
 
 
 describe.only('Event sender', () => {
 
   it('sends multiple events', done => {
-    const server = new TestServer(options, () => {
-      const sender = senderLib.create(options)
+    const server = new TestServer(insecureOptions, () => {
+      const sender = senderLib.create(insecureOptions)
       sender.on('error', done)
       sender.send(messageString)
       server.waitFor('data', data => {
@@ -43,8 +56,8 @@ describe.only('Event sender', () => {
   })
 
   it('sends string locally', done => {
-    const server = new TestServer(options, () => {
-      const sender = senderLib.create(options)
+    const server = new TestServer(insecureOptions, () => {
+      const sender = senderLib.create(insecureOptions)
       sender.on('error', done)
       sender.write(messageString)
       server.waitFor('data', data => {
@@ -58,9 +71,9 @@ describe.only('Event sender', () => {
   });
 
   it('sends object locally', done => {
-    const server = new TestServer(options, () => {
+    const server = new TestServer(insecureOptions, () => {
       const sender = senderLib.create({
-        ...options,
+        ...insecureOptions,
         objectMode: true,
       })
       sender.on('error', done)
@@ -78,20 +91,7 @@ describe.only('Event sender', () => {
     })
   })
   it('sends on TLS', done => {
-    const serverOptions = {
-      ...options,
-      cert: fs.readFileSync(__dirname + '/keys/server.crt'),
-      key: fs.readFileSync(__dirname + '/keys/server.key'),
-      ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
-      requestCert: true,
-    }
     const server = new TestServer(serverOptions, () => {
-      const clientOptions = {
-        ...options,
-        cert: fs.readFileSync(__dirname + '/keys/client.crt'),
-        key: fs.readFileSync(__dirname + '/keys/client.key'),
-        ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
-      }
       const sender = senderLib.create(clientOptions)
       sender.on('error', done)
       sender.send(messageString)
@@ -112,12 +112,45 @@ describe.only('Event sender', () => {
       })
     })
   })
+  it('sends insecurely to TLS', done => {
+    const server = new TestServer(serverOptions, () => {
+      const sender = senderLib.create(insecureOptions)
+      for (let i = 0; i < 1000; i++) {
+        sender.send(messageString)
+      }
+      sender.on('error', error => {
+        error.code.should.equal('ECONNRESET')
+        server.close()
+        done()
+      })
+    })
+  })
+  it('sends TLS to insecure', done => {
+    const server = new TestServer(insecureOptions, () => {
+      const sender = senderLib.create(clientOptions)
+      for (let i = 0; i < 1; i++) {
+        sender.send(messageString)
+      }
+      server.waitFor('data', data => {
+        // 0: TLS record type: handshake (22)
+        data[0].should.equal(22)
+        // 1,2: major-minor version, TLS 1.0 is 3,1
+        data[1].should.equal(3)
+        server.close()
+        done()
+      })
+    })
+  })
 })
 
 class TestServer {
   constructor(options, callback) {
     const libnet = options.cert ? tls : net
-    this._server = libnet.createServer(options, socket => this._socket = socket)
+    this._server = libnet.createServer(options, socket => {
+      this._socket = socket
+      this._socket.on('error', error => this.emit(error))
+    })
+    this._server.on('error', error => console.error('puchi %s', error))
     this._server.unref()
     this._server.listen(options.port, callback)
   }
