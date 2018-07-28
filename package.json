@@ -16,7 +16,8 @@
     "lint": "eslint '**/*.js'"
   },
   "bin": {
-    "devo-query": "bin/cli.js"
+    "devo-query": "bin/cli.js",
+    "devo-send": "bin/sender.js"
   },
   "repository": {
     "type": "git",
