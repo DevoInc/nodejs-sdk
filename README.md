@@ -67,6 +67,13 @@ go to the "Administration/Credentials" section,
 and then to
 ["X.509 Certificates"](https://docs.devo.com/confluence/docs/administration/administration-credentials#Administrationcredentials-X.509Certificates).
 
+![X.509 Certificates](docs/img/download-certificate.png)
+
+From there you will need to download Certificate (to use as `cert`)
+and Private Key (as `key`) for your account.
+Also you will need to download the Chain CA using the button
+to use it as `ca`.
+
 ### Sender Options
 
 These options are passed to the `devo.sender()` constructor.
@@ -196,6 +203,9 @@ go to the "Administration/Credentials" section,
 and then to
 ["Access
 Keys"](https://docs.devo.com/confluence/docs/system-configuration/relays/credentials#Credentials-AccessKeys).
+
+![Access Keys](docs/img/download-api-key.png)
+
 Alternatively you can get an 
 [HTTP
 token](https://docs.devo.com/confluence/docs/system-configuration/relays/credentials#Credentials-HttpTokens)
