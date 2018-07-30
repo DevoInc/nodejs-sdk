@@ -113,6 +113,7 @@ You need to pass the whole certificate, not a path.
 If the sender is going to be used as a stream and you want to
 send objects, set to `true`. Objects will be converted to JSON.
 Optional, default `false`.
+See [send to stream](#send-to-stream) for details.
 
 #### `priority`
 
@@ -136,7 +137,7 @@ Optional, default value `localhost.localdomain`.
 To create the sender you will need to pass all the parameters required.
 Example:
 
-```
+```js
 const sender = devo.sender({
   host: 'app.logtrust.com',
   port: 443,
@@ -145,7 +146,7 @@ const sender = devo.sender({
 })
 ```
 
-### Use as Stream
+### Send to Stream
 
 The `sender` returned can be used as a writeable Node.js stream:
 it can be written to, piped to and so on.
@@ -154,13 +155,26 @@ if too much data is sent at a time it will throttle the writer back.
 
 For example, to send a file to Devo line by line:
 
-```
+```js
 const devo = require('@devo/nodejs-sdk')
 const fs = require('fs')
 
 const sender = devo.sender(options)
 const rs = fs.createReadStream('/path/to/file')
 rs.pipe(sender)
+```
+
+It can also be used to send objects, which will be converted to JSON
+before sending.
+In this case the option `objectMode` must be set to `true`:
+
+```js
+const sender = devo.sender({
+  objectMode: true,
+  ...
+})
+sender.write({key: value})
+sender.end()
 ```
 
 ## Devo Client
