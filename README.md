@@ -75,7 +75,7 @@ They will determine where and how to send the events.
 #### `host`
 
 Host to send the events.
-Either `address` or `host` + `port` must be present.
+Optional, default value `localhost`.
 Can be looked up in Devo as
 [relay
 address](https://docs.devo.com/confluence/docs/system-configuration/relays),
@@ -84,19 +84,11 @@ as (host:port).
 #### `port`
 
 Port to send the events.
-Either `address` or `host` + `port` must be present.
+Mandatory.
 Can be looked up in Devo as
 [relay
 address](https://docs.devo.com/confluence/docs/system-configuration/relays),
 as (host:port).
-
-#### `address`
-
-Host and port to send the events, as `host:port`.
-Either `address` or `host` + `port` must be present.
-Can be looked up in Devo as
-[relay
-address](https://docs.devo.com/confluence/docs/system-configuration/relays).
 
 #### `cert`
 
