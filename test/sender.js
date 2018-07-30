@@ -55,7 +55,7 @@ describe('Event sender', () => {
     })
   })
 
-  it('sends string locally', done => {
+  it('sends string to stream', done => {
     const server = new TestServer(insecureOptions, () => {
       const sender = senderLib.create(insecureOptions)
       sender.on('error', done)
@@ -70,7 +70,7 @@ describe('Event sender', () => {
     })
   });
 
-  it('sends object locally', done => {
+  it('sends object to stream', done => {
     const server = new TestServer(insecureOptions, () => {
       const sender = senderLib.create({
         ...insecureOptions,
