@@ -167,8 +167,8 @@ const devo = require('@devo/nodejs-sdk')
 const fs = require('fs')
 
 const sender = devo.sender(options)
-fs.createReadStream('/path/to/file')
-fs.pipe(sender)
+const rs = fs.createReadStream('/path/to/file')
+rs.pipe(sender)
 ```
 
 ## Devo Client
