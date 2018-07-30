@@ -30,7 +30,7 @@ const clientOptions = {
 }
 
 
-describe.only('Event sender', () => {
+describe('Event sender', () => {
 
   it('sends multiple events', done => {
     const server = new TestServer(insecureOptions, () => {
