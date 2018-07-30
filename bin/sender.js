@@ -14,6 +14,12 @@ const OPTION_LIST = [{
   typeLabel: '[underline]{String}',
   description: 'File to send; if not present send stdin',
 }, {
+  name: 'address',
+  alias: 'a',
+  type: String,
+  typeLabel: '[underline]{String}',
+  description: 'Devo ingestion address, as host:port',
+}, {
   name: 'host',
   alias: 'h',
   type: String,
