@@ -74,30 +74,60 @@ They will determine where and how to send the events.
 
 #### `host`
 
-The host to send the events.
-
-* For EU: `app.logtrust.com`.
-* For US: `usa.logtrust.com`.
+Host to send the events.
+Can be looked up in Devo as
+[relay
+address](https://docs.devo.com/confluence/docs/system-configuration/relays),
+as (host:port).
 
 #### `port`
 
-The port to send the events, mandatory.
-Currently only port 443 is enabled for ingestion.
+Port to send the events.
+Can be looked up in Devo as
+[relay
+address](https://docs.devo.com/confluence/docs/system-configuration/relays),
+as (host:port).
+
+#### `cert`
+
+Certificate for sending events securely.
+Optional; if not present will send events as cleartext (not recommended).
+You need to pass the whole certificate, not a path.
 
 #### `key`
 
 Private key for sending events securely.
+Optional; must be present if `cert` is used.
 You need to pass the whole key, not a path.
 
-#### `cert`
+#### `ca`
 
-Certificate for sending securely.
+Certificate of the authority that created `cert` for sending events securely.
+Optional; needed only if the `cert` is not signed by a recognized CA.
 You need to pass the whole certificate, not a path.
 
 #### `objectMode`
 
 If the sender is going to be used as a stream and you want to
 send objects, set to `true`. Objects will be converted to JSON.
+Optional, default `false`.
+
+#### `priority`
+
+Priority value as specified by
+[RFC 5424](https://tools.ietf.org/html/rfc5424#section-6.2.1).
+Optional, default value `13`.
+
+#### `tag`
+
+Tag to use for the events.
+The tag will determine the table to store the events on Devo.
+Optional, default value `my.app`.
+
+#### `localhost`
+
+Name of the host that generates the events.
+Optional, default value `localhost.localdomain`.
 
 ### Putting It All Together
 
