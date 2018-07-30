@@ -515,16 +515,42 @@ It is then changed to `stopped` when stopped,
 and can be changed back to `running` if restarted.
 If it is removed then it changes to `removed`.
 
-## Command Line Queries
+## Command Line Utilities
 
-The SDK supports running queries from the command line.
-Install the package globally:
+A couple of command line utilities are provided.
+To use them please install the package globally:
 
 ```
 npm install -g @devo/nodejs-sdk
 ```
 
-Use the installed command `devo-query` to run queries.
+### Command Line Uploads
+
+To send files to Devo you can use the installed command `devo-send`:
+
+```
+devo-send \
+  --host eu.elb.relay.logtrust.net \
+  --port 443 \
+  --cert path/to/cert \
+  --key path/to/key \
+  --ca path/to/ca \
+  --file path/to/file/to/upload
+```
+
+You must download your certificate and key from Devo;
+see [sender credentials](#sender-credentials) for more details.
+
+To see all the params please use --help.
+
+```
+devo-send --help
+```
+
+### Command Line Queries
+
+The SDK supports running queries from the command line,
+using the installed command `devo-query`.
 
 Example: send a query and print the results.
 
@@ -541,8 +567,9 @@ devo-query \
 Be sure to use your own API key and secret.
 You can also pass a parameter `-c --credentials` with the path to a credentials
 file, or leave `-k --apiKey` empty to use `$HOME/.devo.json`.
+See [client credentials](#client-credentials) for more details.
 
-To see all the params you can use --help.
+To see all the params please use --help.
 
 ```
 devo-query --help
