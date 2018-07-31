@@ -4,7 +4,7 @@ require('should');
 const fs = require('fs');
 const net = require('net');
 const tls = require('tls');
-
+const { Readable } = require('stream')
 const senderLib = require('../lib/sender.js');
 
 const localPort = 7682
@@ -54,7 +54,6 @@ describe('Event sender', () => {
       })
     })
   })
-
   it('sends string to stream', done => {
     const server = new TestServer(insecureOptions, () => {
       const sender = senderLib.create(insecureOptions)
@@ -69,7 +68,26 @@ describe('Event sender', () => {
       })
     })
   });
-
+  it.only('sends strings to blocking stream', done => {
+    const server = new TestServer(insecureOptions, () => {
+      const sender = senderLib.create(insecureOptions)
+      sender.on('error', done)
+      sendUntilFull(sender, rounds => {
+        let received = 0
+        server.on('data', data => {
+          const message = String(data)
+          message.should.containEql(messageString)
+          message.should.containEql(year)
+          received += message.split(messageString).length - 1
+          if (received == rounds) {
+            sender.end()
+            server.close()
+            done()
+          }
+        })
+      })
+    })
+  });
   it('sends object to stream', done => {
     const server = new TestServer(insecureOptions, () => {
       const sender = senderLib.create({
@@ -162,8 +180,44 @@ class TestServer {
     setImmediate(() => this.waitFor(event, handler))
   }
 
+  on(event, handler) {
+    if (this._socket) {
+      return this._socket.on(event, handler)
+    }
+    setImmediate(() => this.on(event, handler))
+  }
+
   close() {
     this._server.close()
   }
+}
+
+class messageReadable extends Readable {
+  constructor(options) {
+    super(options)
+    this.rounds = 0
+    this._repetitions = 10
+    const line = messageString + '\n'
+    this._message = line.repeat(this._repetitions)
+    this.active = true
+  }
+
+  _read(size) {
+    if (!this.active) return
+    this.push(this._message)
+    this.rounds += this._repetitions
+  }
+}
+
+function sendUntilFull(sender, callback) {
+  const readable = new messageReadable()
+  readable.pipe(sender)
+  const interval = setInterval(() => {
+    if (readable.isPaused()) {
+      readable.active = false
+      clearInterval(interval)
+      return callback(readable.rounds)
+    }
+  }, 1)
 }
 
