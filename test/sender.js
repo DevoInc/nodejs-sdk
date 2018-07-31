@@ -68,7 +68,7 @@ describe('Event sender', () => {
       })
     })
   });
-  it.only('sends strings to blocking stream', done => {
+  it('sends strings to blocking stream', done => {
     const server = new TestServer(insecureOptions, () => {
       const sender = senderLib.create(insecureOptions)
       sender.on('error', done)
