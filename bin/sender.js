@@ -14,12 +14,6 @@ const OPTION_LIST = [{
   typeLabel: '[underline]{String}',
   description: 'File to send; if not present send stdin',
 }, {
-  name: 'address',
-  alias: 'a',
-  type: String,
-  typeLabel: '[underline]{String}',
-  description: 'Devo ingestion address, as host:port',
-}, {
   name: 'host',
   alias: 'h',
   type: String,
@@ -50,6 +44,12 @@ const OPTION_LIST = [{
   typeLabel: '[underline]{String}',
   description: 'Path to Devo CA (found in Administration/Credentials)'
 }, {
+  name: 'tag',
+  alias: 't',
+  type: String,
+  typeLabel: '[underline]{String}',
+  description: 'Tag to use for events: Devo table'
+}, {
   name: 'help',
   type: Boolean,
   typeLabel: '',
@@ -74,6 +74,10 @@ function runSender() {
   const options = getCmdLineOptions();
   if (options.help) {
     return console.log(getUsage(SECTIONS));
+  }
+  if (!options.host || !options.port) {
+    console.error('Host and port required')
+    console.log(getUsage(SECTIONS))
   }
   const params = {...options}
   if (options.cert) params.cert = fs.readFileSync(options.cert)
