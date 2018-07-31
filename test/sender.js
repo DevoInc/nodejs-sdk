@@ -159,6 +159,17 @@ describe('Event sender', () => {
       })
     })
   })
+  it('sends with hex encoding', done => {
+    const server = new TestServer(insecureOptions, () => {
+      const sender = senderLib.create(insecureOptions)
+      sender.write('656565', 'hex')
+      server.waitFor('data', data => {
+        String(data).should.containEql('eee')
+        server.close()
+        done()
+      })
+    })
+  })
 })
 
 class TestServer {
