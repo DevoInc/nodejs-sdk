@@ -461,7 +461,3 @@ To see all the params please use --help.
 devo-query --help
 ```
 
-# License                                                                        
-                                                                                 
-See [main Readme](../README.md).                                                 
-

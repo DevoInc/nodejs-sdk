@@ -225,7 +225,3 @@ To see all the params please use --help.
 devo-send --help
 ```
 
-# License
-
-See [main Readme](../README.md).
-
