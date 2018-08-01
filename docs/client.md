@@ -4,39 +4,68 @@ The Node.js Client is included in the
 [Devo SDK](../README.md).
 It can be used to query Devo, and to manage deferred tasks.
 
-## Quick Start
-
-Install with `npm`:
-
-    $ npm install @devo/nodejs-sdk
-
-Send a query to Devo with your code:
-
-``` js
-const devo = require('@devo/nodejs-sdk')
-
-const client = devo.client({url, apiKey, apiSecret})
-client.query({
-  query: 'from demo.ecommerce.data select eventdate,protocol,statusCode,method',
-}, (error, result) => {
-  console.log('Received %j', result)
-})
-```
-
 See detailed info on
 [Devo client](#devo-client),
 [Client Credentials](#client-credentials),
 [querying](#querying) and [task management](#task-management).
 Also check out how to make [command line queries](command-line-queries).
 
-## Installation
+## Devo Client
 
-You will need to have Node.js locally installed, version 8 or later.
-Install the SDK with:
+The SDK client is used to call the Devo API.
+First import the SDK in your code and create the client:
 
-    $ npm install @devo/nodejs-sdk
+``` js
+const devo = require('@devo/nodejs-sdk')
 
-Or include it in your package.json dependencies and run `npm install`.
+const client = devo.client(credentials)
+```
+
+### Initialization
+
+A parameter can be passed to the constructor with user credentials,
+example:
+
+``` js
+const devo = require('@devo/nodejs-sdk')
+const credentials = {
+  url: 'https://api-us.devo.com/search',
+  apiKey: 'your-api-key',
+  apiSecret: 'your-api-secret',
+}
+const client = devo.client(credentials)
+```
+
+Or with a token:
+
+``` js
+const devo = require('@devo/nodejs-sdk')
+const credentials = {
+  url: 'https://api-us.devo.com/search',
+  token: 'your-token',
+}
+const client = devo.client(credentials)
+```
+
+The `credentials` parameter will have the same attributes as `$HOME/.devo.json`,
+see [configuration file](#configuration-file)
+
+The `credentials` parameter can be omitted when creating the client:
+
+```js
+const client = devo.client()
+```
+
+Without the `credentials` parameter the SDK will look for environment variables,
+and then search for the default credentials
+in `$HOME/.devo.json`.
+Environment variables will override any credentials in `$HOME/.devo.json`.
+If the `credentials` parameter, env variables and `$HOME/.devo.json` are missing
+the client will refuse to start.
+
+The priority is:
+
+    devo.client(credentials) > process.env > $HOME/.devo.json
 
 ## Client Credentials
 
@@ -113,63 +142,6 @@ with your credentials. They are:
 * `DEVO_KEY`: equivalent to `apiKey`.
 * `DEVO_SECRET`: equivalent to `apiSecret`.
 * `DEVO_TOKEN`: equivalent to `token`.
-
-## Devo Client
-
-The SDK has a client to the Devo API for queries.
-First import the SDK in your code and create the client:
-
-``` js
-const devo = require('@devo/nodejs-sdk')
-
-const client = devo.client(credentials)
-```
-
-### Initialization
-
-A parameter can be passed to the constructor with user credentials,
-example:
-
-``` js
-const devo = require('@devo/nodejs-sdk')
-const credentials = {
-  url: 'https://api-us.devo.com/search',
-  apiKey: 'your-api-key',
-  apiSecret: 'your-api-secret',
-}
-const client = devo.client(credentials)
-```
-
-Or with a token:
-
-``` js
-const devo = require('@devo/nodejs-sdk')
-const credentials = {
-  url: 'https://api-us.devo.com/search',
-  token: 'your-token',
-}
-const client = devo.client(credentials)
-```
-
-The `credentials` parameter will have the same attributes as `$HOME/.devo.json`,
-see [configuration file](#configuration-file)
-
-The `credentials` parameter can be omitted when creating the client:
-
-```js
-const client = devo.client()
-```
-
-Without the `credentials` parameter the SDK will look for environment variables,
-and then search for the default credentials
-in `$HOME/.devo.json`.
-Environment variables will override any credentials in `$HOME/.devo.json`.
-If the `credentials` parameter, env variables and `$HOME/.devo.json` are missing
-the client will refuse to start.
-
-The priority is:
-
-    devo.client(credentials) > process.env > $HOME/.devo.json
 
 ## Querying
 

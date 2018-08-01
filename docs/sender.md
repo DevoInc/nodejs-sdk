@@ -28,18 +28,9 @@ sender.send({message: 'something happened', priority: 'high'})
 ```
 
 See detailed info on
-[sender credentials](#sender-credentials)
-[sending events](#sending-events),
+[sender credentials](#sender-credentials),
+[sending events](#sending-events)
 and [command line uploads](#command-line-uploads).
-
-## Installation
-
-You will need to have Node.js locally installed, version 8 or later.
-Install the SDK with:
-
-    $ npm install @devo/nodejs-sdk
-
-Or include it in your package.json dependencies and run `npm install`.
 
 ## Sender Credentials
 

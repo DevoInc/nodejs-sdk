@@ -6,6 +6,50 @@ This is the SDK to access Devo directly from Node.js.
 It can be used to send events and files to Devo,
 to make queries and to manage deferred tasks.
 
+## Quick Start
+
+Install with `npm`:
+
+    $ npm install @devo/nodejs-sdk
+
+Send some data to Devo in your code:
+
+``` js
+const devo = require('@devo/nodejs-sdk')
+
+const sender = devo.sender({host, port})
+sender.send('my first message')
+```
+
+You can send as many events as desired, either as strings or objects:
+
+```js
+sender.send('something happened')
+sender.send({message: 'something happened', priority: 'high'})
+```
+
+Now you can send a query to Devo in your code:
+
+``` js
+const devo = require('@devo/nodejs-sdk')
+
+const client = devo.client({url, apiKey, apiSecret})
+client.query({
+  query: 'from demo.ecommerce.data select eventdate,protocol,statusCode,method',
+}, (error, result) => {
+  console.log('Received %j', result)
+})
+```
+
+## Installation
+
+You will need to have Node.js locally installed, version 8 or later.
+Install the SDK with:
+
+    $ npm install @devo/nodejs-sdk
+
+Or include it in your package.json dependencies and run `npm install`.
+
 ## Sender
 
 See [sender documentation](https://github.com/DevoInc/nodejs-sdk/blob/master/docs/sender.md).
