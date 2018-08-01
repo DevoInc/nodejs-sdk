@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 1.2.4
+
+Improved docs.
+
 ## Version 1.2.3
 
 Full links to documentation on `README.md`.
