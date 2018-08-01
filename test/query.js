@@ -36,7 +36,7 @@ describe('Query client', () => {
       format: 'json/compact',
     }
     overridden.query(options, (error, result) => {
-      process.env.DEVO_URL = oldUrl
+      clearEnvUrl(oldUrl)
       if (!error) return done(new Error('Should not access with env variable'))
       return done()
     })
@@ -54,7 +54,7 @@ describe('Query client', () => {
       format: 'json/compact',
     }
     overridden.query(options, (error, result) => {
-      process.env.DEVO_URL = oldUrl
+      clearEnvUrl(oldUrl)
       return done(error, result)
     })
   })
@@ -103,4 +103,12 @@ describe('Query client', () => {
     stream.on('error', done)
   });
 });
+
+function clearEnvUrl(oldUrl) {
+  if (oldUrl) {
+    process.env.DEVO_URL = oldUrl
+  } else {
+    delete process.env.DEVO_URL
+  }
+}
 
