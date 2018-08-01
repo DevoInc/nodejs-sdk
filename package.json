@@ -34,7 +34,7 @@
     "basic-request": "1.2.2",
     "command-line-args": "4.0.2",
     "command-line-usage": "4.0.0",
-    "@devo/js-helper": "~1.0.0",
+    "@devo/js-helper": "^1.0.3",
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
