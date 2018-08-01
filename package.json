@@ -1,6 +1,6 @@
 {
   "name": "@devo/nodejs-sdk",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Devo SDK for Node.js",
   "author": "Devo Dev Team",
   "eslintConfig": {
@@ -16,7 +16,8 @@
     "lint": "eslint '**/*.js'"
   },
   "bin": {
-    "devo-query": "bin/cli.js"
+    "devo-query": "bin/cli.js",
+    "devo-send": "bin/sender.js"
   },
   "repository": {
     "type": "git",
