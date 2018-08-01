@@ -47,7 +47,7 @@ and then to
 ["Access
 Keys"](https://docs.devo.com/confluence/docs/system-configuration/relays/credentials#Credentials-AccessKeys).
 
-![Access Keys](docs/img/download-api-key.png)
+![Access Keys](img/download-api-key.png)
 
 Alternatively you can get an 
 [HTTP
