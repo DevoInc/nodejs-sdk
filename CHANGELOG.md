@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 1.2.2
+
+Test fix when using configuration file.
+
 ## Version 1.2.1
 
 * Bumped js-helper to 1.0.3.
