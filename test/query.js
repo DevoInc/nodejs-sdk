@@ -3,6 +3,7 @@
 require('should');
 
 const clientLib = require('../lib/client.js');
+const config = require('../lib/config.js')
 
 const client = clientLib.create()
 const QUERY =
@@ -38,6 +39,23 @@ describe('Query client', () => {
       process.env.DEVO_URL = oldUrl
       if (!error) return done(new Error('Should not access with env variable'))
       return done()
+    })
+  })
+
+  it('queries with url ending in /', done => {
+    const oldUrl = process.env.DEVO_URL
+    const read = config.read()
+    process.env.DEVO_URL = read._url + '/'
+    const overridden = clientLib.create()
+    const options = {
+      dateFrom: startDate,
+      dateTo: new Date(),
+      query: QUERY,
+      format: 'json/compact',
+    }
+    overridden.query(options, (error, result) => {
+      process.env.DEVO_URL = oldUrl
+      return done(error, result)
     })
   })
 
