@@ -54,6 +54,8 @@ Alternatively you can get an
 token](https://docs.devo.com/confluence/docs/system-configuration/relays/credentials#Credentials-HttpTokens)
 instead.
 
+### Configuration File
+
 You can place the default credentials in a file called
 `.devo.json` in your home directory
 (`$HOME/.devo.json`),
@@ -101,6 +103,17 @@ An alternative to API key and secret,
 HTTP tokens are a simple way of authenticating.
 They are also obtained from Devo.
 
+### Environment Variables
+
+You can also create
+[environment variables](https://nodejs.org/api/process.html#process_process_env)
+with your credentials. They are:
+
+* `DEVO_URL`: equivalent to `url`.
+* `DEVO_KEY`: equivalent to `apiKey`.
+* `DEVO_SECRET`: equivalent to `apiSecret`.
+* `DEVO_TOKEN`: equivalent to `token`.
+
 ## Devo Client
 
 The SDK has a client to the Devo API for queries.
@@ -138,18 +151,25 @@ const credentials = {
 const client = devo.client(credentials)
 ```
 
+The `credentials` parameter will have the same attributes as `$HOME/.devo.json`,
+see [configuration file](#configuration-file)
+
 The `credentials` parameter can be omitted when creating the client:
 
 ```js
 const client = devo.client()
 ```
 
-Without the `credentials` parameter the SDK will use the default credentials
+Without the `credentials` parameter the SDK will look for environment variables,
+and then search for the default credentials
 in `$HOME/.devo.json`.
-If both the `credentials` parameter and the `$HOME/.devo.json` file are missing
+Environment variables will override any credentials in `$HOME/.devo.json`.
+If the `credentials` parameter, env variables and `$HOME/.devo.json` are missing
 the client will refuse to start.
 
-The `credentials` parameter will have the same attributes as `$HOME/.devo.json`.
+The priority is:
+
+    devo.client(credentials) > process.env > $HOME/.devo.json
 
 ## Querying
 

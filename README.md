@@ -1,3 +1,5 @@
+[![Build Status](https://api.travis-ci.com/DevoInc/nodejs-sdk.svg)](http://travis-ci.com/DevoInc/nodejs-sdk)
+
 # Devo Node.js SDK
 
 This is the SDK to access Devo directly from Node.js.

@@ -24,6 +24,23 @@ describe('Query client', () => {
     })
   });
 
+  it('queries with overriden env variable', done => {
+    const oldUrl = process.env.DEVO_URL
+    process.env.DEVO_URL = 'https://test.test/test'
+    const overridden = clientLib.create()
+    const options = {
+      dateFrom: startDate,
+      dateTo: new Date(),
+      query: QUERY,
+      format: 'json/compact',
+    }
+    overridden.query(options, (error, result) => {
+      process.env.DEVO_URL = oldUrl
+      if (!error) return done(new Error('Should not access with env variable'))
+      return done()
+    })
+  })
+
   it('streams a query', done => {
     let totalRows = 0
     let totalHeaders = 0
