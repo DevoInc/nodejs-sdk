@@ -2,6 +2,11 @@
 
 Change log.
 
+## Version 1.2.1
+
+* Bumped js-helper to 1.0.3.
+* Added test for trailing / in URL.
+
 ## Version 1.2.0
 
 * Read credentials from environment variables.
