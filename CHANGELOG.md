@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 1.2.3
+
+Full links to documentation on `README.md`.
+
 ## Version 1.2.2
 
 Test fix when using configuration file.
