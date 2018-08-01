@@ -83,7 +83,7 @@ The JSON in `$HOME/.devo.json` will have the following attributes.
 
 #### `url`
 
-Parameter `url` is the Devo endpoint you want to connect to.
+The Devo endpoint you want to connect to.
 We currently offer the following endpoints:
 
 * USA: [https://api-us.logtrust.com/search](https://api-us.logtrust.com/search)
