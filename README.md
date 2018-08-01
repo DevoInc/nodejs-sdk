@@ -8,11 +8,11 @@ to make queries and to manage deferred tasks.
 
 ## Sender
 
-See [sender documentation](docs/sender.md).
+See [sender documentation](https://github.com/DevoInc/nodejs-sdk/blob/master/docs/sender.md).
 
 ## Devo Client
 
-See [client documentation](docs/client.md).
+See [client documentation](https://github.com/DevoInc/nodejs-sdk/blob/master/docs/client.md).
 
 ## Development
 
