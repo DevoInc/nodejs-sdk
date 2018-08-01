@@ -6,6 +6,10 @@ Change log.
 
 Added sender capabilities to SDK.
 
+## Version 1.0.1
+
+Improved `README.md`.
+
 ## Version 1.0.0
 
 First public release.

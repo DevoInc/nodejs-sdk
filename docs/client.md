@@ -351,7 +351,9 @@ In this case you will send a query with a destination for S3
 and the required parameters to authenticate.
 The server will reply with the task ID,
 and you can query with this ID for completion.
-See below for details on task management.
+See the
+[docs on S3 export](https://docs.devo.com/confluence/docs/api/rest-api-v2/how-to-query-with-api-v2/forward-to-s3),
+also see below for details on task management.
 
 ## Task Management
 
