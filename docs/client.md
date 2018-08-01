@@ -1,4 +1,4 @@
-# Devo Node.js SDK
+# Devo Node.js Client
 
 The Node.js Client is included in the
 [Devo SDK](../README.md).
