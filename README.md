@@ -79,7 +79,9 @@ Make sure that everything runs fine:
 npm test
 ```
 
-Note: you will need to have your [credentials](#client-credentials) in the file
+Note: you will need to have your
+[credentials](https://github.com/DevoInc/nodejs-sdk/blob/master/docs/client.md#client-credentials)
+in the file
 `$HOME/.devo.json`.
 
 And start playing!
