@@ -152,6 +152,7 @@ const sender = devo.sender({
   port: 443,
   cert: fs.readFileSync('path/to/cert'),
   key: fs.readFileSync('path/to/key'),
+  ca: fs.readFileSync('path/to/ca'),
   tag: 'my.app',
 })
 ```
