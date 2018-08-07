@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 1.2.5
+
+Removed mention to HTTP tokens.
+
 ## Version 1.2.4
 
 Improved docs.
