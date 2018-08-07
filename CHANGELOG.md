@@ -8,6 +8,10 @@ Change log.
 * Changed option from `token` to `apiToken`, old value deprecated.
 * Simplified CLI options to remove camel case.
 
+## Version 2.0.0
+
+[Retired]
+
 ## Version 1.2.4
 
 Improved docs.
