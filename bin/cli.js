@@ -19,13 +19,13 @@ const OPTION_LIST = [{
   typeLabel: '[underline]{String}',
   description: 'Enter path to JSON with Devo credentials'
 }, {
-  name: 'apiKey',
+  name: 'key',
   alias: 'k',
   type: String,
   typeLabel: '[underline]{String}',
   description: 'Enter Devo API Key (found in Administration/Credentials)'
 }, {
-  name: 'apiSecret',
+  name: 'secret',
   alias: 's',
   type: String,
   typeLabel: '[underline]{String}',
@@ -35,26 +35,20 @@ const OPTION_LIST = [{
   alias: 'o',
   type: String,
   typeLabel: '[underline]{String}',
-  description: 'Enter Devo HTTP token (found in Administration/Credentials)'
+  description: 'Enter Devo API token (found in Administration/Credentials)'
 }, {
-  name: 'dateFrom',
-  alias: 'd',
+  name: 'from',
+  alias: 'f',
   type: String,
   typeLabel: '[underline]{String}',
   description: 'Date from in ISO-8601 format. Default value is current date'
 }, {
-  name: 'dateTo',
+  name: 'to',
   alias: 't',
   type: String,
   typeLabel: '[underline]{String}',
   description:
     'Date to in ISO-8601 format. Default value is -1, an ongoing query'
-}, {
-  name: 'help',
-  alias: 'h',
-  type: Boolean,
-  typeLabel: '',
-  description: 'Show help'
 }, {
   name: 'query',
   alias: 'q',
@@ -62,17 +56,23 @@ const OPTION_LIST = [{
   typeLabel: '[underline]{String}',
   description: 'Devo query'
 }, {
-  name: 'queryId',
+  name: 'id',
   alias: 'i',
   type: String,
   typeLabel: '[underline]{String}',
   description: 'Devo query ID'
 }, {
   name: 'format',
-  alias: 'f',
+  alias: 'm',
   type: String,
   typeLabel: '[underline]{String}',
   description: 'Format to request: csv, xslt, msgpack. Default is json'
+}, {
+  name: 'help',
+  alias: 'h',
+  type: Boolean,
+  typeLabel: '',
+  description: 'Show help'
 }];
 
 //Command line helper
@@ -95,13 +95,27 @@ function runClient() {
     return console.log(getUsage(SECTIONS));
   }
   let credentials = null
+  // with no credentials options use ~/.devo.json
   if (options.credentials) {
     credentials = require(options.credentials)
-  } else if ((options.apiKey && options.apiSecret) || options.token) {
-    credentials = options
+    console.log('cred %j', credentials)
+  } else if ((options.key && options.secret) || options.token) {
+    credentials = {
+      url: options.url,
+      apiKey: options.key,
+      apiSecret: options.secret,
+      apiToken: options.token,
+    }
   }
   const client = clientLib.create(credentials)
-  client.query(options, (error, result) => {
+  const queryOptions = {
+    dateFrom: options.from,
+    dateTo: options.to,
+    query: options.query,
+    queryId: options.id || options.queryId,
+    format: options.format,
+  }
+  client.query(queryOptions, (error, result) => {
     if (error ) return console.error('Could not run query: %s', error);
     console.log(result)
   })

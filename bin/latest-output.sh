@@ -8,7 +8,7 @@ end=$(date --iso-8601=seconds)
 echo "from $start to $end"
 
 node $current/cli.js \
-  -d "$start" \
+  -f "$start" \
   -t "$end" \
   -q "from siem.logtrust.serrea.out select eventdate,message"
 
