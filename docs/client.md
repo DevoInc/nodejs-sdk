@@ -42,7 +42,7 @@ Or with a token:
 const devo = require('@devo/nodejs-sdk')
 const credentials = {
   url: 'https://api-us.devo.com/search',
-  token: 'your-token',
+  apiToken: 'your-token',
 }
 const client = devo.client(credentials)
 ```
@@ -99,12 +99,12 @@ Example:
 }
 ```
 
-Or, with an HTTP token:
+Or, with an API token:
 
 ```json
 {
   "url": "https://api-us.devo.com/search",
-  "token": "your-token-here"
+  "apiToken": "your-token-here"
 }
 ```
 
@@ -126,11 +126,12 @@ API key, obtained from Devo.
 
 API secret, obtained from Devo.
 
-#### `token`
+#### `apiToken`
 
 An alternative to API key and secret,
-HTTP tokens are a simple way of authenticating.
+API tokens are a simple way of authenticating.
 They are also obtained from Devo.
+Note: the old parameter `token` is still supported but deprecated.
 
 ### Environment Variables
 
@@ -141,7 +142,7 @@ with your credentials. They are:
 * `DEVO_URL`: equivalent to `url`.
 * `DEVO_KEY`: equivalent to `apiKey`.
 * `DEVO_SECRET`: equivalent to `apiSecret`.
-* `DEVO_TOKEN`: equivalent to `token`.
+* `DEVO_TOKEN`: equivalent to `apiToken`.
 
 ## Querying
 
