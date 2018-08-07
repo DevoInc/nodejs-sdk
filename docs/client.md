@@ -79,9 +79,9 @@ Keys"](https://docs.devo.com/confluence/docs/system-configuration/relays/credent
 ![Access Keys](img/download-api-key.png)
 
 Alternatively you can get an 
-[HTTP
-token](https://docs.devo.com/confluence/docs/system-configuration/relays/credentials#Credentials-HttpTokens)
+API token
 instead.
+Note: API tokens are only supported on Devo 5.3 or later.
 
 ### Configuration File
 
