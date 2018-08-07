@@ -2,9 +2,11 @@
 
 Change log.
 
-## Version 1.2.5
+## Version 2.0.0
 
-Removed mention to HTTP tokens.
+* Removed mentions of HTTP tokens.
+* Changed option from `token` to `apiToken`, old value deprecated.
+* Simplified CLI options to remove camel case.
 
 ## Version 1.2.4
 
