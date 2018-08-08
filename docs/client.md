@@ -29,7 +29,7 @@ example:
 ``` js
 const devo = require('@devo/nodejs-sdk')
 const credentials = {
-  url: 'https://api-us.devo.com/search',
+  url: 'https://api-us.logtrust.com/search',
   apiKey: 'your-api-key',
   apiSecret: 'your-api-secret',
 }
@@ -41,7 +41,7 @@ Or with a token:
 ``` js
 const devo = require('@devo/nodejs-sdk')
 const credentials = {
-  url: 'https://api-us.devo.com/search',
+  url: 'https://api-us.logtrust.com/search',
   apiToken: 'your-token',
 }
 const client = devo.client(credentials)
@@ -93,7 +93,7 @@ Example:
 
 ```json
 {
-  "url": "https://api-us.devo.com/search",
+  "url": "https://api-us.logtrust.com/search",
   "apiKey": "your-api-key",
   "apiSecret": "your-api-secret"
 }
@@ -103,7 +103,7 @@ Or, with an API token:
 
 ```json
 {
-  "url": "https://api-us.devo.com/search",
+  "url": "https://api-us.logtrust.com/search",
   "apiToken": "your-token-here"
 }
 ```
@@ -440,10 +440,10 @@ devo-query \
   -d "2018-07-09T09:00:00Z" \
   -t "2018-07-09T09:04:00Z" \
   -q "from demo.ecommerce.data select eventdate,protocol,statusCode,method" \
-  -u "https://api-us.devo.com/search"
+  -u "https://api-us.logtrust.com/search"
 ```
 
-Be sure to use your own API key and secret.
+Be sure to use your own API key and secret and the correct URL.
 You can also pass a parameter `-c --credentials` with the path to a credentials
 file, or leave `-k --apiKey` empty to use `$HOME/.devo.json`.
 See [client credentials](#client-credentials) for more details.
