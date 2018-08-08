@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 2.0.2
+
+Use valid URLs in `docs/client.md`.
+
 ## Version 2.0.1
 
 * Removed mentions of HTTP tokens.
