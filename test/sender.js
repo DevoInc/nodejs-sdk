@@ -55,7 +55,8 @@ describe('Event sender', () => {
     })
   })
   it('sends string to stream', done => {
-    const server = new TestServer(insecureOptions, () => {
+    const server = new TestServer(insecureOptions, error => {
+      if (error) return done(error)
       const sender = senderLib.create(insecureOptions)
       sender.on('error', done)
       sender.write(messageString)
@@ -69,7 +70,8 @@ describe('Event sender', () => {
     })
   });
   it('sends strings to blocking stream', done => {
-    const server = new TestServer(insecureOptions, () => {
+    const server = new TestServer(insecureOptions, error => {
+      if (error) return done(error)
       const sender = senderLib.create(insecureOptions)
       sender.on('error', done)
       sendUntilFull(sender, rounds => {
@@ -89,7 +91,8 @@ describe('Event sender', () => {
     })
   });
   it('sends object to stream', done => {
-    const server = new TestServer(insecureOptions, () => {
+    const server = new TestServer(insecureOptions, error => {
+      if (error) return done(error)
       const sender = senderLib.create({
         ...insecureOptions,
         objectMode: true,
@@ -109,7 +112,8 @@ describe('Event sender', () => {
     })
   })
   it('sends on TLS', done => {
-    const server = new TestServer(serverOptions, () => {
+    const server = new TestServer(serverOptions, error => {
+      if (error) return done(error)
       const sender = senderLib.create(clientOptions)
       sender.on('error', done)
       sender.send(messageString)
@@ -131,7 +135,8 @@ describe('Event sender', () => {
     })
   })
   it('sends insecurely to TLS', done => {
-    const server = new TestServer(serverOptions, () => {
+    const server = new TestServer(serverOptions, error => {
+      if (error) return done(error)
       const sender = senderLib.create(insecureOptions)
       for (let i = 0; i < 1000; i++) {
         sender.send(messageString)
@@ -144,7 +149,8 @@ describe('Event sender', () => {
     })
   })
   it('sends TLS to insecure', done => {
-    const server = new TestServer(insecureOptions, () => {
+    const server = new TestServer(insecureOptions, error => {
+      if (error) return done(error)
       const sender = senderLib.create(clientOptions)
       for (let i = 0; i < 1; i++) {
         sender.send(messageString)
@@ -160,7 +166,8 @@ describe('Event sender', () => {
     })
   })
   it('sends with hex encoding', done => {
-    const server = new TestServer(insecureOptions, () => {
+    const server = new TestServer(insecureOptions, error => {
+      if (error) return done(error)
       const sender = senderLib.create(insecureOptions)
       sender.write('656565', 'hex')
       server.waitFor('data', data => {
@@ -179,7 +186,7 @@ class TestServer {
       this._socket = socket
       this._socket.on('error', error => this.emit(error))
     })
-    this._server.on('error', error => console.error('Server %s', error))
+    this._server.on('error', error => callback(error))
     this._server.unref()
     this._server.listen(options.port, callback)
   }
