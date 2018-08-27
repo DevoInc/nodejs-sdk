@@ -2,6 +2,11 @@
 
 Change log.
 
+## Version 2.0.3
+
+Create new test certificates valid until 2032.
+Note: should renew in time for expiry.
+
 ## Version 2.0.2
 
 Use valid URLs in `docs/client.md`.
