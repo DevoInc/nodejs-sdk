@@ -20,7 +20,7 @@ const sender = devo.sender({host, port})
 sender.send('my first message')
 ```
 
-From that point you can start sending events:
+From that point you can start sending events, either as strings or as objects:
 
 ```js
 sender.send('something happened')
@@ -59,7 +59,7 @@ const devo = require('@devo/nodejs-sdk')
 const sender = devo.sender(options)
 ```
 
-From there you can start sending events:
+From there you can start sending events, either as strings or as objects:
 
 ```js
 sender.send('something happened')
