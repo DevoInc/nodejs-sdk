@@ -179,7 +179,7 @@ class TestServer {
       this._socket = socket
       this._socket.on('error', error => this.emit(error))
     })
-    this._server.on('error', error => console.error('puchi %s', error))
+    this._server.on('error', error => console.error('Server %s', error))
     this._server.unref()
     this._server.listen(options.port, callback)
   }
