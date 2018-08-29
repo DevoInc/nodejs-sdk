@@ -21,7 +21,9 @@ describe('Query client', () => {
       format: 'json/compact',
     }
     client.query(options, (error, result) => {
-      return done(error, result)
+      if (error) return done(error)
+      if (!result.timestamp) return done(new Error('Result without timestamp'))
+      return done()
     })
   });
 
@@ -58,6 +60,34 @@ describe('Query client', () => {
       return done(error, result)
     })
   })
+
+  it('queries for CSV', done => {
+    const options = {
+      dateFrom: startDate,
+      dateTo: new Date(),
+      query: QUERY,
+      format: 'csv',
+    }
+    client.query(options, (error, result) => {
+      if (typeof result != 'string') {
+        return done(new Error('CSV result should be string'))
+      }
+      return done(error, result)
+    })
+  });
+
+  it('queries for full JSON', done => {
+    const options = {
+      dateFrom: startDate,
+      dateTo: new Date(),
+      query: QUERY,
+      format: 'json',
+    }
+    client.query(options, (error, result) => {
+      if (!result.timestamp) return done(new Error('Result without timestamp'))
+      return done(error, result)
+    })
+  });
 
   it('streams a query', done => {
     let totalRows = 0
