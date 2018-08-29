@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 2.0.4
+
+Bug fix: return formats other than JSON as string.
+
 ## Version 2.0.3
 
 Create new test certificates valid until 2032.
