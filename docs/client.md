@@ -437,7 +437,7 @@ Example: send a query and print the results.
 devo-query \
   -k "your-api-key" \
   -s "your-api-secret" \
-  -d "2018-07-09T09:00:00Z" \
+  -f "2018-07-09T09:00:00Z" \
   -t "2018-07-09T09:04:00Z" \
   -q "from demo.ecommerce.data select eventdate,protocol,statusCode,method" \
   -u "https://api-us.logtrust.com/search"
