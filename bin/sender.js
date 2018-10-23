@@ -50,6 +50,11 @@ const OPTION_LIST = [{
   typeLabel: '[underline]{String}',
   description: 'Tag to use for events: Devo table'
 }, {
+  name: 'insecure',
+  type: Boolean,
+  typeLabel: '[underline]{String}',
+  description: 'Ignore TLS certificate mismatch'
+}, {
   name: 'help',
   type: Boolean,
   typeLabel: '',
@@ -59,10 +64,11 @@ const OPTION_LIST = [{
 //Command line helper
 const SECTIONS = [{
   header: 'Command-line sender for Devo',
-  content: 'Send events to Devo'
+  content: 'Send events to Devo',
 }, {
   header: 'Options',
-  optionList: OPTION_LIST
+  optionList: OPTION_LIST,
+  hide: 'insecure',
 }];
 
 runSender()
