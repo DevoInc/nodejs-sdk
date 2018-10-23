@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 2.1.0
+
+Added option for experimental environments.
+
 ## Version 2.0.4
 
 Bug fix: return formats other than JSON as string.
