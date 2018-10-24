@@ -68,6 +68,16 @@ const OPTION_LIST = [{
   typeLabel: '[underline]{String}',
   description: 'Format to request: csv, xslt, msgpack. Default is json'
 }, {
+  name: 'skip',
+  type: Number,
+  typeLabel: '[underline]{Number}',
+  description: 'Skip these registers from the beginning of the query'
+}, {
+  name: 'limit',
+  type: Number,
+  typeLabel: '[underline]{Number}',
+  description: 'Return only these registers'
+}, {
   name: 'help',
   alias: 'h',
   type: Boolean,
@@ -114,6 +124,8 @@ function runClient() {
     query: options.query,
     queryId: options.id || options.queryId,
     format: options.format,
+    skip: options.skip,
+    limit: options.limit,
   }
   client.query(queryOptions, (error, result) => {
     if (error ) return console.error('Could not run query: %s', error);

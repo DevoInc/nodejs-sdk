@@ -89,6 +89,24 @@ describe('Query client', () => {
     })
   });
 
+  it('queries with skip and limit', done => {
+    const options = {
+      dateFrom: startDate,
+      dateTo: new Date(),
+      query: QUERY,
+      format: 'json/compact',
+      skip: 10,
+      limit: 10,
+    }
+    client.query(options, (error, result) => {
+      if (error) return done(error)
+      if (!result.timestamp) return done(new Error('Result without timestamp'))
+      const rows = result.object.d
+      rows.length.should.be.below(11)
+      return done()
+    })
+  });
+
   it('streams a query', done => {
     let totalRows = 0
     let totalHeaders = 0

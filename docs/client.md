@@ -311,6 +311,16 @@ If not present, or set to the special value `-1`,
 it will start a never-ending query that returns results
 as they are generated (streaming only).
 
+#### `skip`
+
+Number of registers to skip from the beginning of the query.
+Optional parameter.
+
+#### `limit`
+
+Max number of registers to return.
+Optional parameter.
+
 #### `destination`
 
 Optional destination for the data:
