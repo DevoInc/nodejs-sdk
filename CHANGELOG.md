@@ -2,13 +2,17 @@
 
 Change log.
 
+## Version 2.2.0
+
+Add support for skip and limit.
+
 ## Version 2.1.1
 
 Reupload, no changes.
 
 ## Version 2.1.0
 
-Added option for experimental environments.
+Add option for experimental environments.
 
 ## Version 2.0.4
 
