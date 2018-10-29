@@ -149,6 +149,18 @@ describe('Query client', () => {
     stream.on('end', done)
     stream.on('error', done)
   });
+
+  it('streams with invalid table', done => {
+    const options = {
+      dateFrom: startDate,
+      dateTo: new Date(),
+      query: 'from asd123123 sel123123s aasdas123',
+      format: 'json/compact',
+    }
+    const stream = client.stream(options)
+    stream.on('error', (error) => done())
+    stream.on('done', () => done('Should throw error'))
+  })
 });
 
 function clearEnvUrl(oldUrl) {
