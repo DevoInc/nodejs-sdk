@@ -2,6 +2,14 @@
 
 Change log.
 
+## Version 2.2.1
+
+Multiple fixes:
+* Flush correctly for streaming query.
+* Parse status != 500 as error.
+* Emit error for invalid response.
+* Buffer sometimes comes with utf8 encoding.
+
 ## Version 2.2.0
 
 Add support for skip and limit.
