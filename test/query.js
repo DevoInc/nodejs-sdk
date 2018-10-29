@@ -132,7 +132,6 @@ describe('Query client', () => {
     let totalRows = 0
     const options = {
       dateFrom: startDate,
-      dateTo: -1,
       query: QUERY,
       format: 'json/compact',
     }
