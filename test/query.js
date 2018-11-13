@@ -150,7 +150,7 @@ describe('Query client', () => {
     stream.on('error', done)
   });
 
-  it('streams with invalid table', done => {
+  it('streams with invalid query', done => {
     const options = {
       dateFrom: startDate,
       dateTo: new Date(),
@@ -161,6 +161,29 @@ describe('Query client', () => {
     stream.on('error', (error) => done())
     stream.on('done', () => done('Should throw error'))
   })
+
+  it('streams with invalid table', done => {
+    let totalRows = 0
+    const options = {
+      dateFrom: startDate,
+      dateTo: -1,
+      query: QUERY.replace('ecommerce', 'ocommerce'),
+      format: 'json/compact',
+    }
+    const stream = client.stream(options)
+    stream.on('meta', () => {
+      //console.log('meta')
+      setTimeout(() => {
+        totalRows.should.be.greaterThan(0)
+        stream.end()
+      }, 1000)
+    })
+    stream.on('data', () => {
+      totalRows += 1
+    })
+    stream.on('end', done)
+    stream.on('error', error => done(error))
+  });
 });
 
 function clearEnvUrl(oldUrl) {
