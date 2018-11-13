@@ -79,6 +79,12 @@ Make sure that everything runs fine:
 npm test
 ```
 
+To run manual tests against our integration server run:
+
+```
+npm run manualtest
+```
+
 Note: you will need to have your
 [credentials](https://github.com/DevoInc/nodejs-sdk/blob/master/docs/client.md#client-credentials)
 in the file
