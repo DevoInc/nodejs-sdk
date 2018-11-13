@@ -163,7 +163,6 @@ describe('Query client', () => {
   })
 
   it('streams with invalid table', done => {
-    let totalRows = 0
     const options = {
       dateFrom: startDate,
       dateTo: -1,
@@ -171,18 +170,10 @@ describe('Query client', () => {
       format: 'json/compact',
     }
     const stream = client.stream(options)
-    stream.on('meta', () => {
-      //console.log('meta')
-      setTimeout(() => {
-        totalRows.should.be.greaterThan(0)
-        stream.end()
-      }, 1000)
-    })
-    stream.on('data', () => {
-      totalRows += 1
-    })
-    stream.on('end', done)
-    stream.on('error', error => done(error))
+    stream.on('meta', () => done('Should not send meta'))
+    stream.on('data', () => done('Should not send data'))
+    stream.on('end', () => done('Should not finish'))
+    stream.on('error', error => done())
   });
 });
 
