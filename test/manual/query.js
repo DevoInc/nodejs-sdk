@@ -2,13 +2,13 @@
 
 require('should');
 
-const clientLib = require('../lib/client.js');
-const config = require('../lib/config.js')
+const clientLib = require('../../lib/client.js');
+const config = require('../../lib/config.js')
 
 const client = clientLib.create()
 const QUERY =
-  'from demo.ecommerce.data select eventdate,protocol,statusCode,method'
-const startDate = new Date(Date.now() - 60 * 1000)
+  'from siem.logtrust.web.activity select *'
+const startDate = new Date(Date.now() - 60 * 60 * 1000)
 
 
 describe('Query client', () => {
@@ -137,13 +137,14 @@ describe('Query client', () => {
     }
     const stream = client.stream(options)
     stream.on('meta', () => {
-      //console.log('meta')
+      console.log('meta')
       setTimeout(() => {
         totalRows.should.be.greaterThan(0)
         stream.end()
       }, 1000)
     })
     stream.on('data', () => {
+      console.log('data')
       totalRows += 1
     })
     stream.on('end', done)

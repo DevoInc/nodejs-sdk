@@ -13,7 +13,8 @@
   "scripts": {
     "test": "mocha --reporter list --timeout 10000 test/*.js",
     "posttest": "npm run lint",
-    "lint": "eslint '**/*.js'"
+    "lint": "eslint '**/*.js'",
+    "manualtest": "mocha --reporter list --timeout 10000 test/manual/*.js"
   },
   "bin": {
     "devo-query": "bin/cli.js",

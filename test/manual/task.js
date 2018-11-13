@@ -2,7 +2,7 @@
 
 require('should');
 
-const clientLib = require('../lib/client.js');
+const clientLib = require('../../lib/client.js');
 
 const QUERY =
   'from demo.ecommerce.data select eventdate,protocol,statusCode,method'
