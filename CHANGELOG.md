@@ -2,6 +2,11 @@
 
 Change log.
 
+## Version 2.2.2
+
+* Separate tests into auto and manual.
+* Fix streaming queries to ignore empty lines.
+
 ## Version 2.2.1
 
 Multiple fixes:
