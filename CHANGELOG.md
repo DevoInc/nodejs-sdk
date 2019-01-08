@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 2.2.3
+
+* Fix example in `docs/client.md`.
+
 ## Version 2.2.2
 
 * Separate tests into auto and manual.
