@@ -208,22 +208,20 @@ Instead of receiving all results in the callback,
 they can be streamed back to the client.
 Use the function `client.stream(options, callback)` to stream back query results.
 It will accept an options parameter (see below)
-and a callback `function(error, stream)`.
+and return a Node.js stream.
 Example:
 
 ``` js
 const devo = require('@devo/nodejs-sdk')
 const client = devo.client(credentials)
-client.stream({
+const stream = client.stream({
   query: 'from demo.ecommerce.data select eventdate,protocol,statusCode,method',
   dateFrom: new Date(),
   dateTo: -1
-}, (error, stream) => {
-  if (error) return console.error('Query failed: %s', error)
-  stream.on('error', error => console.error('Streaming failed: %s', error))
-  stream.on('data', data => console.log('Received row: %j', data))
-  stream.on('end', () => console.log('Finished'))
 })
+stream.on('error', error => console.error('Streaming failed: %s', error))
+stream.on('data', data => console.log('Received row: %j', data))
+stream.on('end', () => console.log('Finished'))
 ```
 
 The second parameter received by the callback is a Node.js stream
