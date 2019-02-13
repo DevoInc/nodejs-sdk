@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 2.2.4
+
+* Fix: sender was hanging after sending everything.
+
 ## Version 2.2.3
 
 * Fix example in `docs/client.md`.
