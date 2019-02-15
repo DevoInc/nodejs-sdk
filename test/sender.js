@@ -54,6 +54,25 @@ describe('Event sender', () => {
       })
     })
   })
+
+  it('sends using RFC 5424', done => {
+    const server = new TestServer(insecureOptions, () => {
+      const sender = senderLib.create({
+        ...insecureOptions,
+        rfc5424: true,
+      });
+      sender.on('error', done)
+      sender.send(messageString)
+      server.waitFor('data', data => {
+        //console.log('data %s', data);
+        String(data).should.containEql(messageString)
+        String(data).should.containEql(year)
+        sender.end()
+        server.close()
+        done()
+      })
+    })
+  })
   it('sends string to stream', done => {
     const server = new TestServer(insecureOptions, error => {
       if (error) return done(error)
