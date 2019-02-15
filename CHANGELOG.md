@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 2.3.0
+
+* Send messages using the new format conforming to RFC 5424.
+
 ## Version 2.2.4
 
 * Fix: sender was hanging after sending everything.
