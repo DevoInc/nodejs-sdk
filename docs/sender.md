@@ -124,6 +124,20 @@ send objects, set to `true`. Objects will be converted to JSON.
 Optional, default `false`.
 See [send to stream](#send-to-stream) for details.
 
+#### `rfc5424`
+
+If truthy, will send messages using
+[RFC 5424](https://tools.ietf.org/html/rfc5424)
+instead of the more lax
+[RFC 3164](https://tools.ietf.org/html/rfc3164).
+
+Examples:
+
+* Default (RFC 3164):
+`<13>2019-02-15T09:10:53.975Z localhost siem.logtrust.batrasio.free: Message`
+* RFC 5424:
+`<13>1 2019-02-15T09:10:53.975Z localhost siem.logtrust.batrasio.free 1511 master - Message
+
 #### `priority`
 
 Priority value as specified by
@@ -140,6 +154,14 @@ Optional, default value `my.app`.
 
 Name of the host that generates the events.
 Optional, default value `localhost.localdomain`.
+
+#### `pid`
+
+Process ID. Default value: `process.pid`. Only used in RFC 5424.
+
+#### `worker`
+
+Worker ID. Default value `master`. Only used in RFC 5424.
 
 ### Putting It All Together
 

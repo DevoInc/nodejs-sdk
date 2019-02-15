@@ -52,7 +52,7 @@ const OPTION_LIST = [{
 }, {
   name: 'insecure',
   type: Boolean,
-  typeLabel: '[underline]{String}',
+  typeLabel: '[underline]{Boolean}',
   description: 'Ignore TLS certificate mismatch'
 }, {
   name: 'help',
