@@ -14,6 +14,7 @@ const year = new Date().getFullYear()
 const insecureOptions = {
   host: 'localhost',
   port: localPort,
+  tag: 'siem.logtrust.test.movida',
 }
 const serverOptions = {
   ...insecureOptions,
@@ -40,6 +41,7 @@ describe('Event sender', () => {
       server.waitFor('data', data => {
         String(data).should.containEql(messageString)
         String(data).should.containEql(year)
+        String(data).should.containEql(insecureOptions.tag + ':')
         sender.send(messageObject)
         server.waitFor('data', data => {
           String(data).should.containEql(messageString)
@@ -57,9 +59,11 @@ describe('Event sender', () => {
 
   it('sends using RFC 5424', done => {
     const server = new TestServer(insecureOptions, () => {
+      const pid = 2834
       const sender = senderLib.create({
         ...insecureOptions,
         rfc5424: true,
+        pid,
       });
       sender.on('error', done)
       sender.send(messageString)
@@ -67,6 +71,8 @@ describe('Event sender', () => {
         //console.log('data %s', data);
         String(data).should.containEql(messageString)
         String(data).should.containEql(year)
+        String(data).should.containEql(pid)
+        String(data).should.containEql(insecureOptions.tag + ' ')
         sender.end()
         server.close()
         done()
