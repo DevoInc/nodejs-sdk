@@ -31,99 +31,27 @@ const clientOptions = {
 }
 
 
-describe('Event sender', () => {
+describe('Event sender (clear)', () => {
+
+  let server;
+
+  before(async() => {
+    server = await new TestServer(insecureOptions)
+  })
+
+  after(() => {
+    server.close()
+  })
 
   it('sends multiple events', done => {
-    const server = new TestServer(insecureOptions, () => {
-      const sender = senderLib.create(insecureOptions)
-      sender.on('error', done)
-      sender.send(messageString)
-      server.waitFor('data', data => {
-        String(data).should.containEql(messageString)
-        String(data).should.containEql(year)
-        String(data).should.containEql(insecureOptions.tag + ':')
-        sender.send(messageObject)
-        server.waitFor('data', data => {
-          String(data).should.containEql(messageString)
-          String(data).should.containEql('{')
-          String(data).should.containEql('}')
-          String(data).should.containEql('hi')
-          String(data).should.containEql(year)
-          sender.end()
-          server.close()
-          done()
-        })
-      })
-    })
-  })
-
-  it('sends using RFC 5424', done => {
-    const server = new TestServer(insecureOptions, () => {
-      const pid = 2834
-      const sender = senderLib.create({
-        ...insecureOptions,
-        rfc5424: true,
-        pid,
-      });
-      sender.on('error', done)
-      sender.send(messageString)
-      server.waitFor('data', data => {
-        //console.log('data %s', data);
-        String(data).should.containEql(messageString)
-        String(data).should.containEql(year)
-        String(data).should.containEql(pid)
-        String(data).should.containEql(insecureOptions.tag + ' ')
-        sender.end()
-        server.close()
-        done()
-      })
-    })
-  })
-  it('sends string to stream', done => {
-    const server = new TestServer(insecureOptions, error => {
-      if (error) return done(error)
-      const sender = senderLib.create(insecureOptions)
-      sender.on('error', done)
-      sender.write(messageString)
-      server.waitFor('data', data => {
-        String(data).should.containEql(messageString)
-        String(data).should.containEql(year)
-        sender.end()
-        server.close()
-        done()
-      })
-    })
-  });
-  it('sends strings to blocking stream', done => {
-    const server = new TestServer(insecureOptions, error => {
-      if (error) return done(error)
-      const sender = senderLib.create(insecureOptions)
-      sender.on('error', done)
-      sendUntilFull(sender, rounds => {
-        let received = 0
-        server.on('data', data => {
-          const message = String(data)
-          message.should.containEql(messageString)
-          message.should.containEql(year)
-          received += message.split(messageString).length - 1
-          if (received == rounds) {
-            sender.end()
-            server.close()
-            done()
-          }
-        })
-      })
-    })
-  });
-  it('sends object to stream', done => {
-    const server = new TestServer(insecureOptions, error => {
-      if (error) return done(error)
-      const sender = senderLib.create({
-        ...insecureOptions,
-        objectMode: true,
-      })
-      sender.on('error', done)
-      sender.write(messageObject)
+    const sender = senderLib.create(insecureOptions)
+    sender.on('error', done)
+    sender.send(messageString)
+    server.waitFor('data', data => {
+      String(data).should.containEql(messageString)
+      String(data).should.containEql(year)
+      String(data).should.containEql(insecureOptions.tag + ':')
+      sender.send(messageObject)
       server.waitFor('data', data => {
         String(data).should.containEql(messageString)
         String(data).should.containEql('{')
@@ -131,89 +59,159 @@ describe('Event sender', () => {
         String(data).should.containEql('hi')
         String(data).should.containEql(year)
         sender.end()
-        server.close()
         done()
       })
     })
   })
-  it('sends on TLS', done => {
-    const server = new TestServer(serverOptions, error => {
-      if (error) return done(error)
-      const sender = senderLib.create(clientOptions)
-      sender.on('error', done)
+
+  it('sends using RFC 5424', done => {
+    const pid = 2834
+    const sender = senderLib.create({
+      ...insecureOptions,
+      rfc5424: true,
+      pid,
+    });
+    sender.on('error', done)
+    sender.send(messageString)
+    server.waitFor('data', data => {
+      //console.log('data %s', data);
+      String(data).should.containEql(messageString)
+      String(data).should.containEql(year)
+      String(data).should.containEql(pid)
+      String(data).should.containEql(insecureOptions.tag + ' ')
+      sender.end()
+      done()
+    })
+  })
+
+  it('sends string to stream', done => {
+    const sender = senderLib.create(insecureOptions)
+    sender.on('error', done)
+    sender.write(messageString)
+    server.waitFor('data', data => {
+      String(data).should.containEql(messageString)
+      String(data).should.containEql(year)
+      sender.end()
+      done()
+    })
+  })
+
+  it('sends strings to blocking stream', done => {
+    const sender = senderLib.create(insecureOptions)
+    sender.on('error', done)
+    sendUntilFull(sender, rounds => {
+      let received = 0
+      server.on('data', data => {
+        const message = String(data)
+        message.should.containEql(messageString)
+        message.should.containEql(year)
+        received += message.split(messageString).length - 1
+        if (received == rounds) {
+          sender.end()
+          done()
+        }
+      })
+    })
+  })
+
+  it('sends object to stream', done => {
+    const sender = senderLib.create({
+      ...insecureOptions,
+      objectMode: true,
+    })
+    sender.on('error', done)
+    sender.write(messageObject)
+    server.waitFor('data', data => {
+      String(data).should.containEql(messageString)
+      String(data).should.containEql('{')
+      String(data).should.containEql('}')
+      String(data).should.containEql('hi')
+      String(data).should.containEql(year)
+      sender.end()
+      done()
+    })
+  })
+
+  it('sends TLS to insecure', done => {
+    const sender = senderLib.create(clientOptions)
+    for (let i = 0; i < 1; i++) {
       sender.send(messageString)
+    }
+    server.waitFor('data', data => {
+      // 0: TLS record type: handshake (22)
+      data[0].should.equal(22)
+      // 1,2: major-minor version, TLS 1.0 is 3,1
+      data[1].should.equal(3)
+      done()
+    })
+  })
+
+  it('sends with hex encoding', done => {
+    const sender = senderLib.create(insecureOptions)
+    sender.write('656565', 'hex')
+    server.waitFor('data', data => {
+      String(data).should.containEql('eee')
+      done()
+    })
+  })
+})
+
+describe('Event sender (secure)', () => {
+
+  let server;
+
+  before(async() => {
+    server = await new TestServer(serverOptions)
+  })
+
+  after(() => {
+    server.close()
+  })
+
+  it('sends on TLS', done => {
+    const sender = senderLib.create(clientOptions)
+    sender.on('error', done)
+    sender.send(messageString)
+    server.waitFor('data', data => {
+      String(data).should.containEql(messageString)
+      String(data).should.containEql(year)
+      sender.send(messageObject)
       server.waitFor('data', data => {
         String(data).should.containEql(messageString)
+        String(data).should.containEql('{')
+        String(data).should.containEql('}')
+        String(data).should.containEql('hi')
         String(data).should.containEql(year)
-        sender.send(messageObject)
-        server.waitFor('data', data => {
-          String(data).should.containEql(messageString)
-          String(data).should.containEql('{')
-          String(data).should.containEql('}')
-          String(data).should.containEql('hi')
-          String(data).should.containEql(year)
-          sender.end()
-          server.close()
-          done()
-        })
+        sender.end()
+        done()
       })
     })
   })
+
   it('sends insecurely to TLS', done => {
-    const server = new TestServer(serverOptions, error => {
-      if (error) return done(error)
-      const sender = senderLib.create(insecureOptions)
-      for (let i = 0; i < 1000; i++) {
-        sender.send(messageString)
-      }
-      sender.on('error', error => {
-        error.code.should.equal('ECONNRESET')
-        server.close()
-        done()
-      })
-    })
-  })
-  it('sends TLS to insecure', done => {
-    const server = new TestServer(insecureOptions, error => {
-      if (error) return done(error)
-      const sender = senderLib.create(clientOptions)
-      for (let i = 0; i < 1; i++) {
-        sender.send(messageString)
-      }
-      server.waitFor('data', data => {
-        // 0: TLS record type: handshake (22)
-        data[0].should.equal(22)
-        // 1,2: major-minor version, TLS 1.0 is 3,1
-        data[1].should.equal(3)
-        server.close()
-        done()
-      })
-    })
-  })
-  it('sends with hex encoding', done => {
-    const server = new TestServer(insecureOptions, error => {
-      if (error) return done(error)
-      const sender = senderLib.create(insecureOptions)
-      sender.write('656565', 'hex')
-      server.waitFor('data', data => {
-        String(data).should.containEql('eee')
-        server.close()
-        done()
-      })
+    const sender = senderLib.create(insecureOptions)
+    for (let i = 0; i < 1000; i++) {
+      sender.send(messageString)
+    }
+    sender.on('error', error => {
+      error.code.should.equal('ECONNRESET')
+      done()
     })
   })
 })
 
 class TestServer {
-  constructor(options, callback) {
-    const libnet = options.cert ? tls : net
-    this._server = libnet.createServer(options, socket => {
-      this._socket = socket
-      this._socket.on('error', error => this.emit(error))
+  constructor(options) {
+    return new Promise((ok, ko) => {
+      const libnet = options.cert ? tls : net
+      this._server = libnet.createServer(options, socket => {
+        this._socket = socket
+        this._socket.on('error', error => this.emit(error))
+      })
+      this._server.on('error', error => ko(error))
+      this._server.unref()
+      this._server.listen(options.port, ok)
     })
-    this._server.on('error', error => callback(error))
-    this._server.unref()
-    this._server.listen(options.port, callback)
   }
 
   waitFor(event, handler) {
