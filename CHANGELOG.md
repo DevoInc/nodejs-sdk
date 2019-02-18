@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 2.3.1
+
+* Added a debug option to show messages before sending them.
+
 ## Version 2.3.0
 
 * Send messages using the new format conforming to RFC 5424.
