@@ -35,11 +35,11 @@ describe('Event sender (clear)', () => {
 
   let server;
 
-  before(async() => {
+  beforeEach(async() => {
     server = await new TestServer(insecureOptions)
   })
 
-  after(() => {
+  afterEach(() => {
     server.close()
   })
 
@@ -210,7 +210,7 @@ class TestServer {
       })
       this._server.on('error', error => ko(error))
       this._server.unref()
-      this._server.listen(options.port, ok)
+      this._server.listen(options.port, () => ok(this))
     })
   }
 
