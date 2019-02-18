@@ -163,6 +163,10 @@ Process ID. Default value: `process.pid`. Only used in RFC 5424.
 
 Worker ID. Default value `master`. Only used in RFC 5424.
 
+#### `debug`
+
+Show messages on console before sending them. Useful for debug.
+
 ### Putting It All Together
 
 To create the sender you will need to pass all the parameters required.
