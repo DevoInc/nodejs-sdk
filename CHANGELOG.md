@@ -2,6 +2,11 @@
 
 Change log.
 
+## Version 2.3.2
+
+* Show debug messages without prompt.
+* Document debug option.
+
 ## Version 2.3.1
 
 * Added a debug option to show messages before sending them.
