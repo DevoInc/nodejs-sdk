@@ -136,7 +136,7 @@ Examples:
 * Default (RFC 3164):
 `<13>2019-02-15T09:10:53.975Z localhost siem.logtrust.batrasio.free: Message`
 * RFC 5424:
-`<13>1 2019-02-15T09:10:53.975Z localhost siem.logtrust.batrasio.free 1511 master - Message
+`<13>1 2019-02-15T09:10:53.975Z localhost siem.logtrust.batrasio.free 1511 master - Message`
 
 #### `priority`
 
