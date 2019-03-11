@@ -8,7 +8,7 @@ See detailed info on
 [Devo client](#devo-client),
 [Client Credentials](#client-credentials),
 [querying](#querying) and [task management](#task-management).
-Also check out how to make [command line queries](command-line-queries).
+Also check out how to make [command line queries](#command-line-queries).
 
 ## Devo Client
 
