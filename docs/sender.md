@@ -27,6 +27,15 @@ sender.send('something happened')
 sender.send({message: 'something happened', priority: 'high'})
 ```
 
+Call `end` in order to trigger the process that closes the connection with Devo.
+
+```js
+sender.end();
+```
+
+Sender supports the [unref](https://nodejs.org/api/net.html#net_socket_unref)
+method, see the official NodeJS for more details.
+
 See detailed info on
 [sender credentials](#sender-credentials),
 [sending events](#sending-events)

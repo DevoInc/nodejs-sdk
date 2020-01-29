@@ -1,6 +1,6 @@
 'use strict';
 
-require('should');
+const should = require('should');
 const fs = require('fs');
 const net = require('net');
 const tls = require('tls');
@@ -153,6 +153,18 @@ describe('Event sender (clear)', () => {
       String(data).should.containEql('eee')
       done()
     })
+  })
+
+  it('fails when sending after end', done => {
+    const sender = senderLib.create(insecureOptions)
+    sender.write(messageString);
+    server.waitFor('data', _ => {
+      sender.end();
+      should.throws(
+        () => sender.write(messageString)
+        , /ERR_STREAM_WRITE_AFTER_END/);
+      done();
+    });
   })
 })
 
