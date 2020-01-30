@@ -2,6 +2,11 @@
 
 Change log.
 
+## Version 2.3.3
+
+* Expose `Sender.unref()` method and no longer flag the sender as unreferenced
+by default.
+
 ## Version 2.3.2
 
 * Show debug messages without prompt.
