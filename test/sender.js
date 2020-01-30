@@ -162,7 +162,7 @@ describe('Event sender (clear)', () => {
       sender.end();
       should.throws(
         () => sender.write(messageString)
-        , /ERR_STREAM_WRITE_AFTER_END/);
+        , /write after end/);
       done();
     });
   })
