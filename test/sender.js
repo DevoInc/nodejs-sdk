@@ -23,6 +23,10 @@ const serverOptions = {
   ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
   requestCert: true,
 }
+const relpOptions = {
+  ...insecureOptions,
+  relp: true
+}
 const clientOptions = {
   ...insecureOptions,
   cert: fs.readFileSync(__dirname + '/keys/client.crt'),
@@ -210,6 +214,37 @@ describe('Event sender (secure)', () => {
       done()
     })
   })
+})
+
+describe.only('Event sender (RELP)', () => {
+
+  let server;
+
+  beforeEach(async() => {
+    server = await new TestServer(relpOptions)
+  });
+
+  afterEach(async() => {
+    await server.close();
+  });
+
+  it('sends many events', done => {
+    const sender = senderLib.create(relpOptions)
+    const txnos = new Set();
+    txnos.add(1); // open uses txno 1
+    sender.on('error', done)
+    for (let i = 0; i < 100; i++) {
+      txnos.add(sender.send(messageString));
+    }
+    txnos.add(sender.sendClose());
+    txnos.size.should.be.exactly(102);
+    server.on('data', data => {
+      //console.log('server data:\n', data.toString());
+    })
+    // TODO: receive 102 rsps
+    // TODO: txnos should be empty
+  });
+
 })
 
 class TestServer {
