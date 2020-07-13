@@ -255,7 +255,7 @@ describe('Event sender (RELP)', () => {
     const sender = senderLib.create(relpOptions)
     const txno = sender.send(messageString);
     for (let i = 0; i < 99; i++)
-      sender.resend(messageString, txno);
+      sender.resend(messageString, txno).should.be.exactly(txno);
     sender.sendClose();
     let txnoRsps = 0;
     let openRsp = false;
