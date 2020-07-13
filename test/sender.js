@@ -238,9 +238,17 @@ describe('Event sender (RELP)', () => {
     }
     txnos.add(sender.sendClose());
     txnos.size.should.be.exactly(102);
+    let openRsp = false;
+    let closeRsp = false;
     sender.on('rsp', rsp => {
       txnos.delete(rsp.txno);
-      if(txnos.size === 0) done();
+      openRsp = openRsp || rsp.command === 'open';
+      closeRsp = closeRsp || rsp.command === 'close';
+      if(txnos.size === 0) {
+        openRsp.should.be.true();
+        closeRsp.should.be.true();
+        done();
+      }
     });
   });
 
