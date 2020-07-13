@@ -233,9 +233,8 @@ describe('Event sender (RELP)', () => {
     const txnos = new Set();
     txnos.add(1); // open uses txno 1
     sender.on('error', done)
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 100; i++)
       txnos.add(sender.send(messageString));
-    }
     txnos.add(sender.sendClose());
     txnos.size.should.be.exactly(102);
     let openRsp = false;
@@ -249,6 +248,23 @@ describe('Event sender (RELP)', () => {
         closeRsp.should.be.true();
         done();
       }
+    });
+  });
+
+  it('resend', done => {
+    const sender = senderLib.create(relpOptions)
+    const txno = sender.send(messageString);
+    for (let i = 0; i < 99; i++)
+      sender.resend(messageString, txno);
+    sender.sendClose();
+    let txnoRsps = 0;
+    let openRsp = false;
+    let closeRsp = false;
+    sender.on('rsp', rsp => {
+      if(rsp.txno === txno) txnoRsps++;
+      openRsp = openRsp || rsp.command === 'open';
+      closeRsp = closeRsp || rsp.command === 'close';
+      if(txnoRsps === 100 && openRsp && closeRsp) done();
     });
   });
 
