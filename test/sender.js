@@ -216,7 +216,7 @@ describe('Event sender (secure)', () => {
   })
 })
 
-describe.only('Event sender (RELP)', () => {
+describe('Event sender (RELP)', () => {
 
   let server;
 
@@ -238,14 +238,15 @@ describe.only('Event sender (RELP)', () => {
     }
     txnos.add(sender.sendClose());
     txnos.size.should.be.exactly(102);
-    server.on('data', data => {
-      //console.log('server data:\n', data.toString());
-    })
-    // TODO: receive 102 rsps
-    // TODO: txnos should be empty
+    sender.on('rsp', rsp => {
+      txnos.delete(rsp.txno);
+      if(txnos.size === 0) done();
+    });
   });
 
 })
+
+const RELP_COMMAND_REGEX = /^([0-9]+) [a-z]+ ([0-9]+)/i;
 
 class TestServer {
   constructor(options) {
@@ -254,6 +255,10 @@ class TestServer {
       this._server = libnet.createServer(options, socket => {
         this._socket = socket
         this._socket.on('error', error => this.emit(error))
+        if (options.relp) {
+          this._socket._relpInput = '';
+          this._socket.on('data', data => this._onRelpData(this._socket, data));
+        }
       })
       this._server.on('error', error => ko(error))
       this._server.unref()
@@ -273,6 +278,20 @@ class TestServer {
       return this._socket.on(event, handler)
     }
     setImmediate(() => this.on(event, handler))
+  }
+
+  _onRelpData(socket, data) {
+    socket._relpInput += data.toString();
+    let m;
+    //console.log(`input:\n[${socket._relpInput}]`);
+    while((m = socket._relpInput.match(RELP_COMMAND_REGEX))) {
+      const txno = m[1];
+      const length = Number(m[2]);
+      const bodyStart = m[0].length + 1;
+      if(socket._relpInput.length < bodyStart + length + 1) break;
+      socket._relpInput = socket._relpInput.substring(bodyStart + length + 1);
+      socket.write(`${txno} rsp 6 200 OK\n`);
+    }
   }
 
   close() {
