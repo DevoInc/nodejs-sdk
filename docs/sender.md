@@ -41,6 +41,24 @@ See detailed info on
 [sending events](#sending-events)
 and [command line uploads](#command-line-uploads).
 
+## RELP Protocol
+
+The sender supports RELP protocol emitting events for each RSP command received
+and enabling resend and close commands:
+
+```js
+const sender = devo.sender({host, port, relp: true})
+const txno = sender.send('a RELP message') // txno === 2
+sender.resend('a RELP message', txno) // reuse txno
+sender.sendClose() // sends close command
+sender.on('rsp', (rsp) => {
+  rsp; // { txno: 1, command: 'open', body: '200 OK' }
+       // { txno: 2, command: 'syslog', body: '200 OK' }
+       // { txno: 2, command: 'syslog', body: '200 OK' }
+       // { txno: 3, command: 'close', body: '200 OK' }
+})
+```
+
 ## Sender Credentials
 
 You need to be a customer to send events to Devo.
