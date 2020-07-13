@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 2.4.0
+
+* Added support for RELP protocol.
+
 ## Version 2.3.3
 
 * Expose `Sender.unref()` method and no longer flag the sender as unreferenced
