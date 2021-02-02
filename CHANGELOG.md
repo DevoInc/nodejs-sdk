@@ -2,6 +2,10 @@
 
 Change log.
 
+## Version 2.3.3
+
+* Sender unrefs the socket by default. Adds the `unref` option.
+
 ## Version 2.3.2
 
 * Show debug messages without prompt.

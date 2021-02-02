@@ -17,7 +17,7 @@ Send some data to Devo in your code:
 const devo = require('@devo/nodejs-sdk')
 
 const sender = devo.sender({host, port})
-sender.send('my first message')
+sender.send('my first message', () => console.log('sent'));
 ```
 
 From that point you can start sending events, either as strings or as objects:
@@ -26,6 +26,16 @@ From that point you can start sending events, either as strings or as objects:
 sender.send('something happened')
 sender.send({message: 'something happened', priority: 'high'})
 ```
+
+The sender creates a TCP socket underneath, and an application using the SDK
+will wait until these sockets are freed before ending. This means that an
+application using the SDK will not end until all sockets are properly closed.
+Call `sender.end()` to close your side of the socket. Also, you can set the
+`unref` option to `true`, and the sender will
+['unref'](https://nodejs.org/api/net.html#net_socket_unref) the socket. In this
+case, the application is responsible for being alive until all the events are
+properly sent. The `sender.send(msg, cb)` method accepts a callback as the
+second argument that will be called when the message has been delivered.
 
 See detailed info on
 [sender credentials](#sender-credentials),
@@ -91,6 +101,12 @@ Can be looked up in Devo as
 [relay
 address](https://docs.devo.com/confluence/docs/system-configuration/relays),
 as (host:port).
+
+#### `unref`
+
+Indicates if the sender should
+['unref'](https://nodejs.org/api/net.html#net_socket_unref) the TCP socket
+underneath. It defaults to `false`.
 
 #### `cert`
 
