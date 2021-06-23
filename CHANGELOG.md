@@ -5,11 +5,12 @@ Change log.
 ## Version 2.4.0
 
 * Added support for RELP protocol.
+* Expose `Sender.unref()` method and no longer flag the sender as unreferenced
+by default.
 
 ## Version 2.3.3
 
-* Expose `Sender.unref()` method and no longer flag the sender as unreferenced
-by default.
+* Sender unrefs the socket by default. Adds the `unref` option.
 
 ## Version 2.3.2
 
