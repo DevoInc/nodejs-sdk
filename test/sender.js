@@ -1,6 +1,6 @@
 'use strict';
 
-require('should');
+const should = require('should');
 const fs = require('fs');
 const net = require('net');
 const tls = require('tls');
@@ -22,6 +22,10 @@ const serverOptions = {
   key: fs.readFileSync(__dirname + '/keys/server.key'),
   ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
   requestCert: true,
+}
+const relpOptions = {
+  ...insecureOptions,
+  relp: true
 }
 const clientOptions = {
   ...insecureOptions,
@@ -154,6 +158,18 @@ describe('Event sender (clear)', () => {
       done()
     })
   })
+
+  it('fails when sending after end', done => {
+    const sender = senderLib.create(insecureOptions)
+    sender.write(messageString);
+    server.waitFor('data', _ => {
+      sender.end();
+      should.throws(
+        () => sender.write(messageString)
+        , /write after end/);
+      done();
+    });
+  })
 })
 
 describe('Event sender (secure)', () => {
@@ -200,6 +216,62 @@ describe('Event sender (secure)', () => {
   })
 })
 
+describe('Event sender (RELP)', () => {
+
+  let server;
+
+  beforeEach(async() => {
+    server = await new TestServer(relpOptions)
+  });
+
+  afterEach(async() => {
+    await server.close();
+  });
+
+  it('sends many events', done => {
+    const sender = senderLib.create(relpOptions)
+    const txnos = new Set();
+    txnos.add(1); // open uses txno 1
+    sender.on('error', done)
+    for (let i = 0; i < 100; i++)
+      txnos.add(sender.send(messageString));
+    txnos.add(sender.sendClose());
+    txnos.size.should.be.exactly(102);
+    let openRsp = false;
+    let closeRsp = false;
+    sender.on('rsp', rsp => {
+      txnos.delete(rsp.txno);
+      openRsp = openRsp || rsp.command === 'open';
+      closeRsp = closeRsp || rsp.command === 'close';
+      if(txnos.size === 0) {
+        openRsp.should.be.true();
+        closeRsp.should.be.true();
+        done();
+      }
+    });
+  });
+
+  it('resend', done => {
+    const sender = senderLib.create(relpOptions)
+    const txno = sender.send(messageString);
+    for (let i = 0; i < 99; i++)
+      sender.resend(messageString, txno).should.be.exactly(txno);
+    sender.sendClose();
+    let txnoRsps = 0;
+    let openRsp = false;
+    let closeRsp = false;
+    sender.on('rsp', rsp => {
+      if(rsp.txno === txno) txnoRsps++;
+      openRsp = openRsp || rsp.command === 'open';
+      closeRsp = closeRsp || rsp.command === 'close';
+      if(txnoRsps === 100 && openRsp && closeRsp) done();
+    });
+  });
+
+})
+
+const RELP_COMMAND_REGEX = /^([0-9]+) [a-z]+ ([0-9]+)/i;
+
 class TestServer {
   constructor(options) {
     return new Promise((ok, ko) => {
@@ -207,6 +279,10 @@ class TestServer {
       this._server = libnet.createServer(options, socket => {
         this._socket = socket
         this._socket.on('error', error => this.emit(error))
+        if (options.relp) {
+          this._socket._relpInput = '';
+          this._socket.on('data', data => this._onRelpData(this._socket, data));
+        }
       })
       this._server.on('error', error => ko(error))
       this._server.unref()
@@ -226,6 +302,20 @@ class TestServer {
       return this._socket.on(event, handler)
     }
     setImmediate(() => this.on(event, handler))
+  }
+
+  _onRelpData(socket, data) {
+    socket._relpInput += data.toString();
+    let m;
+    //console.log(`input:\n[${socket._relpInput}]`);
+    while((m = socket._relpInput.match(RELP_COMMAND_REGEX))) {
+      const txno = m[1];
+      const length = Number(m[2]);
+      const bodyStart = m[0].length + 1;
+      if(socket._relpInput.length < bodyStart + length + 1) break;
+      socket._relpInput = socket._relpInput.substring(bodyStart + length + 1);
+      socket.write(`${txno} rsp 6 200 OK\n`);
+    }
   }
 
   close() {

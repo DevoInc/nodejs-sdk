@@ -1,6 +1,6 @@
 {
   "name": "@devo/nodejs-sdk",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "description": "Devo SDK for Node.js",
   "author": "Devo Dev Team",
   "eslintConfig": {
