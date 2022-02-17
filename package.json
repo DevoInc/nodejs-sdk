@@ -1,6 +1,6 @@
 {
   "name": "@devo/nodejs-sdk",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "Devo SDK for Node.js",
   "author": "Devo Dev Team",
   "eslintConfig": {
@@ -35,7 +35,7 @@
     "basic-request": "1.2.2",
     "command-line-args": "4.0.2",
     "command-line-usage": "4.0.0",
-    "@devo/js-helper": "^1.3.0",
+    "@devo/js-helper": "^1.6.2",
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
