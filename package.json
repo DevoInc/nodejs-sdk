@@ -11,7 +11,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter list --timeout 10000 test/*.js",
+    "pretest": "echo Hola",
+    "test": "mocha test/*.js",
     "posttest": "npm run lint",
     "lint": "eslint '**/*.js'",
     "manualtest": "mocha --reporter list --timeout 10000 test/manual/*.js"
@@ -32,16 +33,20 @@
     "LinQ"
   ],
   "dependencies": {
+    "@devo/js-helper": "^1.6.2",
     "basic-request": "1.2.2",
     "command-line-args": "4.0.2",
     "command-line-usage": "4.0.0",
-    "@devo/js-helper": "^1.6.2",
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
-    "eslint": "^4.18.1",
-    "mocha": "^3.5.0",
-    "should": "^12.0.0"
+    "eslint": "^8.11.0",
+    "mocha": "^9.2.2",
+    "should": "^13.2.3"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=14",
+    "npm": ">=7"
+  }
 }
