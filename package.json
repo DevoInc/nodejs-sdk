@@ -12,10 +12,10 @@
   "main": "index.js",
   "scripts": {
     "pretest": "echo Hola",
-    "test": "mocha test/*.js",
+    "test": "mocha test/*.js --exit",
     "posttest": "npm run lint",
     "lint": "eslint '**/*.js'",
-    "manualtest": "mocha --reporter list --timeout 10000 test/manual/*.js"
+    "manualtest": "mocha --reporter list --timeout 50000 test/manual/*.js"
   },
   "bin": {
     "devo-query": "bin/cli.js",

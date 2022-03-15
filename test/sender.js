@@ -30,7 +30,6 @@ const clientOptions = {
   ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
 }
 
-/*
 describe('Event sender (clear)', () => {
 
   let server;
@@ -131,6 +130,20 @@ describe('Event sender (clear)', () => {
       done()
     })
   })
+  it('sends TLS to insecure', done => {
+    const sender = senderLib.create(clientOptions)
+    for (let i = 0; i < 1; i++) {
+      sender.send(messageString)
+    }
+    server.waitFor('data', data => {
+      // 0: TLS record type: handshake (22)
+      data[0].should.equal(22)
+      // 1,2: major-minor version, TLS 1.0 is 3,1
+      data[1].should.equal(3)
+      sender.end()
+      done()
+    })
+  })
   it('sends with hex encoding', done => {
     const sender = senderLib.create(insecureOptions)
     sender.write('656565', 'hex')
@@ -140,44 +153,9 @@ describe('Event sender (clear)', () => {
       done()
     })
   })
-})*/
+})
 
-describe('', () => {
-  let server;
-
-  before(async() => {
-    server = await new TestServer(insecureOptions)
-  })
-
-  after( async() => {
-    console.log('AFTER')
-    server.close()
-    //server.endSC()
-  })
-
-  it('sends TLS to insecure', done => {
-    const sender = senderLib.create(clientOptions)
-    for (let i = 0; i < 1; i++) {
-      sender.send(messageString)
-    }
-    server.waitFor('close', () => {
-      console.log('close');
-    });
-    server.waitFor('data', data => {
-      console.log('wait data');
-      // 0: TLS record type: handshake (22)
-      data[0].should.equal(22)
-      // 1,2: major-minor version, TLS 1.0 is 3,1
-      data[1].should.equal(3)
-      //server.endSC()
-      sender.end()
-      done()
-      console.log('FIN')
-    })
-  })
-});
-
-/*describe('Event sender (secure)', () => {
+describe('Event sender (secure)', () => {
 
   let server;
 
@@ -219,7 +197,7 @@ describe('', () => {
       done()
     })
   })
-})*/
+})
 
 class TestServer {
   constructor(options) {
