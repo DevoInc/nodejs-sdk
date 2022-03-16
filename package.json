@@ -15,7 +15,7 @@
     "test": "mocha test/*.js --exit",
     "posttest": "npm run lint",
     "lint": "eslint '**/*.js'",
-    "manualtest": "mocha --reporter list --timeout 50000 test/manual/*.js"
+    "manualtest": "mocha --reporter list --timeout 50000 test/manual/*.js --exit"
   },
   "bin": {
     "devo-query": "bin/cli.js",
@@ -34,7 +34,7 @@
   ],
   "dependencies": {
     "@devo/js-helper": "^1.6.2",
-    "basic-request": "1.2.2",
+    "basic-request": "^3.0.4",
     "command-line-args": "4.0.2",
     "command-line-usage": "4.0.0",
     "whatwg-fetch": "2.0.3"

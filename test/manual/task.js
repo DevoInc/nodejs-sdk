@@ -15,7 +15,7 @@ const options = {
     type: 'email',
     params: {
       'email.to': 'my@mail.com',
-      'email.subject': 'my subject'
+      'email.subject': 'test'
     }
   },
 }

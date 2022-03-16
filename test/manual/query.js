@@ -23,8 +23,8 @@ describe('Query client', () => {
     client.query(options, (error, result) => {
       if (error) return done(error)
       if (!result.timestamp) return done(new Error('Result without timestamp'))
-      return done()
-    })
+      done()
+    });
   });
 
   it('queries with overriden env variable', done => {
@@ -122,7 +122,6 @@ describe('Query client', () => {
     stream.on('end', () => {
       totalRows.should.be.a.Number()
       totalHeaders.should.equal(1)
-      //console.log('read %s rows', totalRows)
       done();
     });
     stream.on('error', done)
@@ -137,14 +136,12 @@ describe('Query client', () => {
     }
     const stream = client.stream(options)
     stream.on('meta', () => {
-      console.log('meta')
       setTimeout(() => {
         totalRows.should.be.greaterThan(0)
         stream.end()
-      }, 1000)
+      }, 5000)
     })
     stream.on('data', () => {
-      console.log('data')
       totalRows += 1
     })
     stream.on('end', done)
@@ -167,14 +164,14 @@ describe('Query client', () => {
     const options = {
       dateFrom: startDate,
       dateTo: -1,
-      query: QUERY.replace('ecommerce', 'ocommerce'),
+      query: QUERY.replace('activity', 'actibity'),
       format: 'json/compact',
     }
     const stream = client.stream(options)
     stream.on('meta', () => done('Should not send meta'))
     stream.on('data', () => done('Should not send data'))
     stream.on('end', () => done('Should not finish'))
-    stream.on('error', error => done())
+    stream.on('error', () => done())
   });
 });
 
