@@ -231,10 +231,6 @@ class TestServer {
     this._server.close()
   }
 
-  endSC() {
-    this._socket.end();
-    this._server.close()
-  }
 }
 
 class messageReadable extends Readable {
