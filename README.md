@@ -90,6 +90,22 @@ Note: you will need to have your
 in the file
 `$HOME/.devo.json`.
 
+In the task test is necessary to change the mail.
+``` js
+const options = {
+  dateFrom: new Date(Date.now() - 60 * 1000),
+  dateTo: new Date(),
+  query: QUERY,
+  destination: {
+    type: 'email',
+    params: {
+      'email.to': 'my@mail.com',
+      'email.subject': 'test'
+    }
+  },
+}
+```
+
 And start playing!
 Pull requests are welcome ☺
 
