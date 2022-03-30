@@ -4,4 +4,3 @@ node_modules
 /dist
 html/bundle*
 .idea
-package-lock.json
