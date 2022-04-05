@@ -73,6 +73,7 @@ describe('Event sender (clear)', () => {
     sender.on('error', done)
     sender.send(messageString)
     server.waitFor('data', data => {
+      //console.log('data %s', data);
       String(data).should.containEql(messageString)
       String(data).should.containEql(year)
       String(data).should.containEql(pid)
@@ -113,13 +114,11 @@ describe('Event sender (clear)', () => {
   })
 
   it('sends object to stream', done => {
-    let sender = undefined
     try {
-      sender = senderLib.create({
+      const sender = senderLib.create({
         ...insecureOptions,
         objectMode: true,
       })
-
       sender.on('error', done)
       sender.write(messageObject)
       server.waitFor('data', data => {
@@ -128,17 +127,17 @@ describe('Event sender (clear)', () => {
         String(data).should.containEql('}')
         String(data).should.containEql('hi')
         String(data).should.containEql(year)
-      })
-      sender.end()
+        sender.end()
+        done()
+      });
     } catch (e) {
       if (e.code != 'ERR_INVALID_ARG_VALUE') {
         throw e; // let others bubble up
+      } else {
+        done()
       }
-    } finally {
-      done()
     }
   })
-
   it('sends TLS to insecure', done => {
     const sender = senderLib.create(clientOptions)
     for (let i = 0; i < 1; i++) {
