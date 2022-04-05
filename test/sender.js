@@ -120,7 +120,7 @@ describe('Event sender (clear)', () => {
         objectMode: true,
       })
     } catch (e) {
-      if (e.name == 'ERR_INVALID_ARG_VALUE') {
+      if (e.code == 'ERR_INVALID_ARG_VALUE') {
         sender = senderLib.create(insecureOptions)
       } else {
         throw e; // let others bubble up
