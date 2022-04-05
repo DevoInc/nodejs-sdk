@@ -73,7 +73,6 @@ describe('Event sender (clear)', () => {
     sender.on('error', done)
     sender.send(messageString)
     server.waitFor('data', data => {
-      //console.log('data %s', data);
       String(data).should.containEql(messageString)
       String(data).should.containEql(year)
       String(data).should.containEql(pid)
@@ -114,10 +113,20 @@ describe('Event sender (clear)', () => {
   })
 
   it('sends object to stream', done => {
-    const sender = senderLib.create({
-      ...insecureOptions,
-      objectMode: true,
-    })
+    let sender = undefined
+    try {
+      sender = senderLib.create({
+        ...insecureOptions,
+        objectMode: true,
+      })
+    } catch (e) {
+      if (e.name == 'ERR_INVALID_ARG_VALUE') {
+        sender = senderLib.create(insecureOptions)
+      } else {
+        throw e; // let others bubble up
+      }
+    }
+
     sender.on('error', done)
     sender.write(messageObject)
     server.waitFor('data', data => {
