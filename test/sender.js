@@ -119,26 +119,26 @@ describe('Event sender (clear)', () => {
         ...insecureOptions,
         objectMode: true,
       })
+
+      sender.on('error', done)
+      sender.write(messageObject)
+      server.waitFor('data', data => {
+        String(data).should.containEql(messageString)
+        String(data).should.containEql('{')
+        String(data).should.containEql('}')
+        String(data).should.containEql('hi')
+        String(data).should.containEql(year)
+      })
+      sender.end()
     } catch (e) {
-      if (e.code == 'ERR_INVALID_ARG_VALUE') {
-        sender = senderLib.create(insecureOptions)
-      } else {
+      if (e.code != 'ERR_INVALID_ARG_VALUE') {
         throw e; // let others bubble up
       }
-    }
-
-    sender.on('error', done)
-    sender.write(messageObject)
-    server.waitFor('data', data => {
-      String(data).should.containEql(messageString)
-      String(data).should.containEql('{')
-      String(data).should.containEql('}')
-      String(data).should.containEql('hi')
-      String(data).should.containEql(year)
-      sender.end()
+    } finally {
       done()
-    })
+    }
   })
+
   it('sends TLS to insecure', done => {
     const sender = senderLib.create(clientOptions)
     for (let i = 0; i < 1; i++) {
