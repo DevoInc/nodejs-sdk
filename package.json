@@ -1,6 +1,6 @@
 {
-  "name": "@devo/nodejs-sdk",
-  "version": "2.3.4",
+  "name": "@devoinc/nodejs-sdk",
+  "version": "3.0.0",
   "description": "Devo SDK for Node.js",
   "author": "Devo Dev Team",
   "eslintConfig": {
@@ -33,7 +33,7 @@
     "LinQ"
   ],
   "dependencies": {
-    "@devo/js-helper": "^1.6.2",
+    "@devoinc/js-helper": "^2.0.0",
     "basic-request": "^3.0.4",
     "command-line-args": "4.0.2",
     "command-line-usage": "4.0.0",
