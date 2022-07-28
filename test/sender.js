@@ -34,7 +34,6 @@ const clientOptions = {
   ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
 }
 
-
 describe('Event sender (clear)', () => {
 
   let server;
@@ -119,23 +118,30 @@ describe('Event sender (clear)', () => {
   })
 
   it('sends object to stream', done => {
-    const sender = senderLib.create({
-      ...insecureOptions,
-      objectMode: true,
-    })
-    sender.on('error', done)
-    sender.write(messageObject)
-    server.waitFor('data', data => {
-      String(data).should.containEql(messageString)
-      String(data).should.containEql('{')
-      String(data).should.containEql('}')
-      String(data).should.containEql('hi')
-      String(data).should.containEql(year)
-      sender.end()
-      done()
-    })
+    try {
+      const sender = senderLib.create({
+        ...insecureOptions,
+        objectMode: true,
+      })
+      sender.on('error', done)
+      sender.write(messageObject)
+      server.waitFor('data', data => {
+        String(data).should.containEql(messageString)
+        String(data).should.containEql('{')
+        String(data).should.containEql('}')
+        String(data).should.containEql('hi')
+        String(data).should.containEql(year)
+        sender.end()
+        done()
+      });
+    } catch (e) {
+      if (e.code != 'ERR_INVALID_ARG_VALUE') {
+        throw e; // let others bubble up
+      } else {
+        done()
+      }
+    }
   })
-
   it('sends TLS to insecure', done => {
     const sender = senderLib.create(clientOptions)
     for (let i = 0; i < 1; i++) {
@@ -146,15 +152,16 @@ describe('Event sender (clear)', () => {
       data[0].should.equal(22)
       // 1,2: major-minor version, TLS 1.0 is 3,1
       data[1].should.equal(3)
+      sender.end()
       done()
     })
   })
-
   it('sends with hex encoding', done => {
     const sender = senderLib.create(insecureOptions)
     sender.write('656565', 'hex')
     server.waitFor('data', data => {
       String(data).should.containEql('eee')
+      sender.end()
       done()
     })
   })
@@ -321,6 +328,7 @@ class TestServer {
   close() {
     this._server.close()
   }
+
 }
 
 class messageReadable extends Readable {

@@ -5,18 +5,18 @@ require('should');
 const clientLib = require('../../lib/client.js');
 
 const QUERY =
-  'from demo.ecommerce.data select eventdate,protocol,statusCode,method'
+  'from siem.logtrust.web.activity select *'
 const client = clientLib.create()
 const options = {
   dateFrom: new Date(Date.now() - 60 * 1000),
   dateTo: new Date(),
   query: QUERY,
-  format: 'json',
   destination: {
-    type: 'donothing',
+    type: 'email',
     params: {
-      param0: '1',
-    },
+      'email.to': 'my@mail.com',
+      'email.subject': 'test'
+    }
   },
 }
 

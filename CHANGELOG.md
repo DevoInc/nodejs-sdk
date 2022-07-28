@@ -8,6 +8,10 @@ Change log.
 * Expose `Sender.unref()` method and no longer flag the sender as unreferenced
 by default.
 
+## Version 2.3.4
+
+* Upgraded the `js-helper` version to the latest
+
 ## Version 2.3.3
 
 * Sender unrefs the socket by default. Adds the `unref` option.
