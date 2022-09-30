@@ -11,7 +11,6 @@
   },
   "main": "index.js",
   "scripts": {
-    "pretest": "echo Hola",
     "test": "mocha test/*.js --exit",
     "posttest": "npm run lint",
     "lint": "eslint '**/*.js'",
