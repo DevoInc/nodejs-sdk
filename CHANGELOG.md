@@ -2,9 +2,10 @@
 
 Change log.
 
-## Version 2.4.0
+## Version 3.1.0
 
 * Added support for RELP protocol.
+
 ## Version 2.3.4
 
 * Upgraded the `js-helper` version to the latest
