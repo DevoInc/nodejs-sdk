@@ -47,7 +47,7 @@ and [command line uploads](#command-line-uploads).
 ## RELP Protocol
 
 The sender supports RELP protocol emitting events for each RSP command received
-and enabling resend and close commands:
+and enables the resend and close commands:
 
 ```js
 const sender = devo.sender({host, port, relp: true})
