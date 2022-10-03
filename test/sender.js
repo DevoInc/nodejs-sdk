@@ -261,7 +261,7 @@ describe('Event sender (RELP)', () => {
   });
 
   it('resend', done => {
-    const sender = senderLib.create(relpOptions)
+    const sender = senderLib.create(relpOptions);
     const txno = sender.send(messageString);
     for (let i = 0; i < 99; i++)
       sender.resend(messageString, txno).should.be.exactly(txno);
