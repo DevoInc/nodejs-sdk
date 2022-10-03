@@ -241,7 +241,7 @@ describe('Event sender (RELP)', () => {
     const sender = senderLib.create(relpOptions);
     const txnos = new Set();
     txnos.add(1); // open uses txno 1
-    sender.on('error', done)
+    sender.on('error', done);
     for (let i = 0; i < 100; i++)
       txnos.add(sender.send(messageString));
     txnos.add(sender.sendClose());
