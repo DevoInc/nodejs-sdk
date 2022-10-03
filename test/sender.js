@@ -167,7 +167,7 @@ describe('Event sender (clear)', () => {
   })
 
   it('fails when sending after end', done => {
-    const sender = senderLib.create(insecureOptions)
+    const sender = senderLib.create(insecureOptions);
     sender.write(messageString);
     server.waitFor('data', _ => {
       sender.end(() => {
