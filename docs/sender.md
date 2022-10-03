@@ -28,7 +28,7 @@ sender.send({message: 'something happened', priority: 'high'})
 ```
 
 Sender supports the [unref](https://nodejs.org/api/net.html#net_socket_unref)
-method, see the official NodeJS for more details.
+method. See the official Nodejs documentation linked above for more details.
 The sender creates a TCP socket underneath, and an application using the SDK
 will wait until these sockets are freed before ending. This means that an
 application using the SDK will not end until all sockets are properly closed.
