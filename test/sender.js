@@ -4,167 +4,167 @@ require('should');
 const fs = require('fs');
 const net = require('net');
 const tls = require('tls');
-const { Readable } = require('stream')
+const { Readable } = require('stream');
 const senderLib = require('../lib/sender.js');
 
-const localPort = 7682
-const messageString = 'I am Groot'
-const messageObject = {message: messageString, note: 'hi'}
-const year = new Date().getFullYear()
+const localPort = 7682;
+const messageString = 'I am Groot';
+const messageObject = {message: messageString, note: 'hi'};
+const year = new Date().getFullYear();
 const insecureOptions = {
   host: 'localhost',
   port: localPort,
   tag: 'siem.logtrust.test.movida',
-}
+};
 const serverOptions = {
   ...insecureOptions,
   cert: fs.readFileSync(__dirname + '/keys/server.crt'),
   key: fs.readFileSync(__dirname + '/keys/server.key'),
   ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
   requestCert: true,
-}
+};
 const relpOptions = {
   ...insecureOptions,
   relp: true
-}
+};
 const clientOptions = {
   ...insecureOptions,
   cert: fs.readFileSync(__dirname + '/keys/client.crt'),
   key: fs.readFileSync(__dirname + '/keys/client.key'),
   ca: fs.readFileSync(__dirname + '/keys/ca.crt'),
-}
+};
 
 describe('Event sender (clear)', () => {
 
   let server;
 
   beforeEach(async() => {
-    server = await new TestServer(insecureOptions)
-  })
+    server = await new TestServer(insecureOptions);
+  });
 
   afterEach(() => {
-    server.close()
-  })
+    server.close();
+  });
 
   it('sends multiple events', done => {
-    const sender = senderLib.create(insecureOptions)
-    sender.on('error', done)
-    sender.send(messageString)
+    const sender = senderLib.create(insecureOptions);
+    sender.on('error', done);
+    sender.send(messageString);
     server.waitFor('data', data => {
-      String(data).should.containEql(messageString)
-      String(data).should.containEql(year)
-      String(data).should.containEql(insecureOptions.tag + ':')
-      sender.send(messageObject)
+      String(data).should.containEql(messageString);
+      String(data).should.containEql(year);
+      String(data).should.containEql(insecureOptions.tag + ':');
+      sender.send(messageObject);
       server.waitFor('data', data => {
-        String(data).should.containEql(messageString)
-        String(data).should.containEql('{')
-        String(data).should.containEql('}')
-        String(data).should.containEql('hi')
-        String(data).should.containEql(year)
-        sender.end()
-        done()
-      })
-    })
-  })
+        String(data).should.containEql(messageString);
+        String(data).should.containEql('{');
+        String(data).should.containEql('}');
+        String(data).should.containEql('hi');
+        String(data).should.containEql(year);
+        sender.end();
+        done();
+      });
+    });
+  });
 
   it('sends using RFC 5424', done => {
-    const pid = 2834
+    const pid = 2834;
     const sender = senderLib.create({
       ...insecureOptions,
       rfc5424: true,
       pid,
     });
-    sender.on('error', done)
-    sender.send(messageString)
+    sender.on('error', done);
+    sender.send(messageString);
     server.waitFor('data', data => {
       //console.log('data %s', data);
-      String(data).should.containEql(messageString)
-      String(data).should.containEql(year)
-      String(data).should.containEql(pid)
-      String(data).should.containEql(insecureOptions.tag + ' ')
-      sender.end()
-      done()
-    })
-  })
+      String(data).should.containEql(messageString);
+      String(data).should.containEql(year);
+      String(data).should.containEql(pid);
+      String(data).should.containEql(insecureOptions.tag + ' ');
+      sender.end();
+      done();
+    });
+  });
 
   it('sends string to stream', done => {
-    const sender = senderLib.create(insecureOptions)
-    sender.on('error', done)
-    sender.write(messageString)
+    const sender = senderLib.create(insecureOptions);
+    sender.on('error', done);
+    sender.write(messageString);
     server.waitFor('data', data => {
-      String(data).should.containEql(messageString)
-      String(data).should.containEql(year)
-      sender.end()
-      done()
-    })
-  })
+      String(data).should.containEql(messageString);
+      String(data).should.containEql(year);
+      sender.end();
+      done();
+    });
+  });
 
   it('sends strings to blocking stream', done => {
-    const sender = senderLib.create(insecureOptions)
-    sender.on('error', done)
+    const sender = senderLib.create(insecureOptions);
+    sender.on('error', done);
     sendUntilFull(sender, rounds => {
-      let received = 0
+      let received = 0;
       server.on('data', data => {
-        const message = String(data)
-        message.should.containEql(messageString)
-        message.should.containEql(year)
-        received += message.split(messageString).length - 1
+        const message = String(data);
+        message.should.containEql(messageString);
+        message.should.containEql(year);
+        received += message.split(messageString).length - 1;
         if (received == rounds) {
-          sender.end()
-          done()
+          sender.end();
+          done();
         }
-      })
-    })
-  })
+      });
+    });
+  });
 
   it('sends object to stream', done => {
     try {
       const sender = senderLib.create({
         ...insecureOptions,
         objectMode: true,
-      })
-      sender.on('error', done)
-      sender.write(messageObject)
+      });
+      sender.on('error', done);
+      sender.write(messageObject);
       server.waitFor('data', data => {
-        String(data).should.containEql(messageString)
-        String(data).should.containEql('{')
-        String(data).should.containEql('}')
-        String(data).should.containEql('hi')
-        String(data).should.containEql(year)
-        sender.end()
-        done()
+        String(data).should.containEql(messageString);
+        String(data).should.containEql('{');
+        String(data).should.containEql('}');
+        String(data).should.containEql('hi');
+        String(data).should.containEql(year);
+        sender.end();
+        done();
       });
     } catch (e) {
       if (e.code != 'ERR_INVALID_ARG_VALUE') {
         throw e; // let others bubble up
       } else {
-        done()
+        done();
       }
     }
-  })
+  });
   it('sends TLS to insecure', done => {
-    const sender = senderLib.create(clientOptions)
+    const sender = senderLib.create(clientOptions);
     for (let i = 0; i < 1; i++) {
-      sender.send(messageString)
+      sender.send(messageString);
     }
     server.waitFor('data', data => {
       // 0: TLS record type: handshake (22)
-      data[0].should.equal(22)
+      data[0].should.equal(22);
       // 1,2: major-minor version, TLS 1.0 is 3,1
-      data[1].should.equal(3)
-      sender.end()
-      done()
-    })
-  })
+      data[1].should.equal(3);
+      sender.end();
+      done();
+    });
+  });
   it('sends with hex encoding', done => {
-    const sender = senderLib.create(insecureOptions)
-    sender.write('656565', 'hex')
+    const sender = senderLib.create(insecureOptions);
+    sender.write('656565', 'hex');
     server.waitFor('data', data => {
-      String(data).should.containEql('eee')
-      sender.end()
-      done()
-    })
-  })
+      String(data).should.containEql('eee');
+      sender.end();
+      done();
+    });
+  });
 
   it('fails when sending after end', done => {
     const sender = senderLib.create(insecureOptions);
@@ -178,52 +178,52 @@ describe('Event sender (clear)', () => {
         sender.write(messageString);
       });
     });
-  })
-})
+  });
+});
 
 describe('Event sender (secure)', () => {
 
   let server;
 
   before(async() => {
-    server = await new TestServer(serverOptions)
-  })
+    server = await new TestServer(serverOptions);
+  });
 
   after(() => {
-    server.close()
-  })
+    server.close();
+  });
 
   it('sends on TLS', done => {
-    const sender = senderLib.create(clientOptions)
-    sender.on('error', done)
-    sender.send(messageString)
+    const sender = senderLib.create(clientOptions);
+    sender.on('error', done);
+    sender.send(messageString);
     server.waitFor('data', data => {
-      String(data).should.containEql(messageString)
-      String(data).should.containEql(year)
-      sender.send(messageObject)
+      String(data).should.containEql(messageString);
+      String(data).should.containEql(year);
+      sender.send(messageObject);
       server.waitFor('data', data => {
-        String(data).should.containEql(messageString)
-        String(data).should.containEql('{')
-        String(data).should.containEql('}')
-        String(data).should.containEql('hi')
-        String(data).should.containEql(year)
-        sender.end()
-        done()
-      })
-    })
-  })
+        String(data).should.containEql(messageString);
+        String(data).should.containEql('{');
+        String(data).should.containEql('}');
+        String(data).should.containEql('hi');
+        String(data).should.containEql(year);
+        sender.end();
+        done();
+      });
+    });
+  });
 
   it('sends insecurely to TLS', done => {
-    const sender = senderLib.create(insecureOptions)
+    const sender = senderLib.create(insecureOptions);
     for (let i = 0; i < 1000; i++) {
-      sender.send(messageString)
+      sender.send(messageString);
     }
     sender.on('error', error => {
-      error.code.should.equal('ECONNRESET')
-      done()
-    })
-  })
-})
+      error.code.should.equal('ECONNRESET');
+      done();
+    });
+  });
+});
 
 describe('Event sender (RELP)', () => {
 
@@ -277,40 +277,40 @@ describe('Event sender (RELP)', () => {
     });
   });
 
-})
+});
 
 const RELP_COMMAND_REGEX = /^([0-9]+) [a-z]+ ([0-9]+)/i;
 
 class TestServer {
   constructor(options) {
     return new Promise((ok, ko) => {
-      const libnet = options.cert ? tls : net
+      const libnet = options.cert ? tls : net;
       this._server = libnet.createServer(options, socket => {
-        this._socket = socket
-        this._socket.on('error', error => this.emit(error))
+        this._socket = socket;
+        this._socket.on('error', error => this.emit(error));
         if (options.relp) {
           this._socket._relpInput = '';
           this._socket.on('data', data => this._onRelpData(this._socket, data));
         }
-      })
-      this._server.on('error', error => ko(error))
-      this._server.unref()
-      this._server.listen(options.port, () => ok(this))
-    })
+      });
+      this._server.on('error', error => ko(error));
+      this._server.unref();
+      this._server.listen(options.port, () => ok(this));
+    });
   }
 
   waitFor(event, handler) {
     if (this._socket) {
-      return this._socket.once(event, handler)
+      return this._socket.once(event, handler);
     }
-    setImmediate(() => this.waitFor(event, handler))
+    setImmediate(() => this.waitFor(event, handler));
   }
 
   on(event, handler) {
     if (this._socket) {
-      return this._socket.on(event, handler)
+      return this._socket.on(event, handler);
     }
-    setImmediate(() => this.on(event, handler))
+    setImmediate(() => this.on(event, handler));
   }
 
   _onRelpData(socket, data) {
@@ -328,37 +328,37 @@ class TestServer {
   }
 
   close() {
-    this._server.close()
+    this._server.close();
   }
 
 }
 
 class messageReadable extends Readable {
   constructor(options) {
-    super(options)
-    this.rounds = 0
-    this._repetitions = 10
-    const line = messageString + '\n'
-    this._message = line.repeat(this._repetitions)
-    this.active = true
+    super(options);
+    this.rounds = 0;
+    this._repetitions = 10;
+    const line = messageString + '\n';
+    this._message = line.repeat(this._repetitions);
+    this.active = true;
   }
 
-  _read(size) {
-    if (!this.active) return
-    this.push(this._message)
-    this.rounds += this._repetitions
+  _read(_size) {
+    if (!this.active) return;
+    this.push(this._message);
+    this.rounds += this._repetitions;
   }
 }
 
 function sendUntilFull(sender, callback) {
-  const readable = new messageReadable()
-  readable.pipe(sender)
+  const readable = new messageReadable();
+  readable.pipe(sender);
   const interval = setInterval(() => {
     if (readable.isPaused()) {
-      readable.active = false
-      clearInterval(interval)
-      return callback(readable.rounds)
+      readable.active = false;
+      clearInterval(interval);
+      return callback(readable.rounds);
     }
-  }, 1)
+  }, 1);
 }
 

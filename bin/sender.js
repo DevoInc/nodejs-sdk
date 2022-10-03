@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict'
+'use strict';
 
 const fs = require('fs');
 const commandLineArgs = require('command-line-args');
@@ -71,7 +71,7 @@ const SECTIONS = [{
   hide: 'insecure',
 }];
 
-runSender()
+runSender();
 
 
 function runSender() {
@@ -82,19 +82,19 @@ function runSender() {
     return console.log(getUsage(SECTIONS));
   }
   if (!options.host || !options.port) {
-    console.error('Host and port required')
-    console.log(getUsage(SECTIONS))
+    console.error('Host and port required');
+    console.log(getUsage(SECTIONS));
   }
-  const params = {...options}
-  if (options.cert) params.cert = fs.readFileSync(options.cert)
-  if (options.key) params.key = fs.readFileSync(options.key)
-  if (options.ca) params.ca = fs.readFileSync(options.ca)
-  const sender = senderLib.create(params)
-  let input = process.stdin
+  const params = {...options};
+  if (options.cert) params.cert = fs.readFileSync(options.cert);
+  if (options.key) params.key = fs.readFileSync(options.key);
+  if (options.ca) params.ca = fs.readFileSync(options.ca);
+  const sender = senderLib.create(params);
+  let input = process.stdin;
   if (options.file) {
-    input = fs.createReadStream(options.file)
+    input = fs.createReadStream(options.file);
   }
-  input.pipe(sender)
+  input.pipe(sender);
 }
 
 /**

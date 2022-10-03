@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict'
+'use strict';
 
 const commandLineArgs = require('command-line-args');
 const getUsage = require('command-line-usage');
@@ -94,7 +94,7 @@ const SECTIONS = [{
   optionList: OPTION_LIST
 }];
 
-runClient()
+runClient();
 
 
 function runClient() {
@@ -104,20 +104,20 @@ function runClient() {
   if (options.help) {
     return console.log(getUsage(SECTIONS));
   }
-  let credentials = null
+  let credentials = null;
   // with no credentials options use ~/.devo.json
   if (options.credentials) {
-    credentials = require(options.credentials)
-    console.log('cred %j', credentials)
+    credentials = require(options.credentials);
+    console.log('cred %j', credentials);
   } else if ((options.key && options.secret) || options.token) {
     credentials = {
       url: options.url,
       apiKey: options.key,
       apiSecret: options.secret,
       apiToken: options.token,
-    }
+    };
   }
-  const client = clientLib.create(credentials)
+  const client = clientLib.create(credentials);
   const queryOptions = {
     dateFrom: options.from,
     dateTo: options.to,
@@ -126,11 +126,11 @@ function runClient() {
     format: options.format,
     skip: options.skip,
     limit: options.limit,
-  }
+  };
   client.query(queryOptions, (error, result) => {
     if (error ) return console.error('Could not run query: %s', error);
-    console.log(result)
-  })
+    console.log(result);
+  });
 }
 
 /**
