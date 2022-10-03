@@ -238,7 +238,7 @@ describe('Event sender (RELP)', () => {
   });
 
   it('sends many events', done => {
-    const sender = senderLib.create(relpOptions)
+    const sender = senderLib.create(relpOptions);
     const txnos = new Set();
     txnos.add(1); // open uses txno 1
     sender.on('error', done)
