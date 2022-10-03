@@ -230,7 +230,7 @@ describe('Event sender (RELP)', () => {
   let server;
 
   beforeEach(async() => {
-    server = await new TestServer(relpOptions)
+    server = await new TestServer(relpOptions);
   });
 
   afterEach(async() => {
