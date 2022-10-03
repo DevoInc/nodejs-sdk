@@ -26,7 +26,7 @@ const serverOptions = {
 const relpOptions = {
   ...insecureOptions,
   relp: true
-}
+};
 const clientOptions = {
   ...insecureOptions,
   cert: fs.readFileSync(__dirname + '/keys/client.crt'),
