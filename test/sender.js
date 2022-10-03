@@ -317,7 +317,7 @@ class TestServer {
     socket._relpInput += data.toString();
     let m;
     //console.log(`input:\n[${socket._relpInput}]`);
-    while((m = socket._relpInput.match(RELP_COMMAND_REGEX))) {
+    while((m = socket._relpInput.match(RELP_COMMAND_REGEX)) !== null) {
       const txno = m[1];
       const length = Number(m[2]);
       const bodyStart = m[0].length + 1;
