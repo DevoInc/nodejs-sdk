@@ -27,6 +27,8 @@ sender.send('something happened')
 sender.send({message: 'something happened', priority: 'high'})
 ```
 
+Sender supports the [unref](https://nodejs.org/api/net.html#net_socket_unref)
+method. See the official Nodejs documentation linked above for more details.
 The sender creates a TCP socket underneath, and an application using the SDK
 will wait until these sockets are freed before ending. This means that an
 application using the SDK will not end until all sockets are properly closed.
@@ -41,6 +43,24 @@ See detailed info on
 [sender credentials](#sender-credentials),
 [sending events](#sending-events)
 and [command line uploads](#command-line-uploads).
+
+## RELP Protocol
+
+The sender supports RELP protocol emitting events for each RSP command received
+and enables the resend and close commands:
+
+```js
+const sender = devo.sender({host, port, relp: true})
+const txno = sender.send('a RELP message') // txno === 2
+sender.resend('a RELP message', txno) // reuse txno
+sender.sendClose() // sends close command
+sender.on('rsp', (rsp) => {
+  rsp; // { txno: 1, command: 'open', body: '200 OK' }
+       // { txno: 2, command: 'syslog', body: '200 OK' }
+       // { txno: 2, command: 'syslog', body: '200 OK' }
+       // { txno: 3, command: 'close', body: '200 OK' }
+})
+```
 
 ## Sender Credentials
 
